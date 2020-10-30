@@ -1,0 +1,1 @@
+<div id="copyright text-right">Static footer (no Vue)<br>© Copyright 2020</div>

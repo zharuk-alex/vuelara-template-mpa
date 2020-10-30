@@ -1,0 +1,12 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/css/main.css": "/css/main.css",
+    "/js/about.js": "/js/about.js",
+    "/js/dash.js": "/js/dash.js",
+    "/js/reports.js": "/js/reports.js",
+    "/js/welcome.js": "/js/welcome.js",
+    "/vendors~js/reports.js": "/vendors~js/reports.js",
+    "/vendors~js/dash.js": "/vendors~js/dash.js",
+    "/js/dashboard.js": "/js/dashboard.js",
+    "/vendors~js/dashboard.js": "/vendors~js/dashboard.js"
+}

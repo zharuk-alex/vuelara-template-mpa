@@ -34,11 +34,3 @@
 		}
 	}
 </script>
-<style lang="scss" scoped>
-  .scoped-scss{
-	font-size: 2rem;
-	font-weight: 600;
-	color: lighten($color: #000000, $amount: 20);
-	text-align: center;
-  }
-</style>

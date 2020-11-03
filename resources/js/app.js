@@ -1,7 +1,11 @@
-require('./bootstrap');
+// require('./bootstrap');
 import Vue from 'vue' 
 import Vuetify from 'vuetify'
+// import Vuetify from 'vuetify/lib'
 import Vuex from 'vuex';
+// import '@mdi/font/css/materialdesignicons.css';
+// import 'vuetify/dist/vuetify.css';
+
 
 Vue.use(Vuetify);
 Vue.use(Vuex);
@@ -34,22 +38,31 @@ const app = new Vue({
         /* Dynamically loading components  */
         /* Имя vue скрипта должно быть идентичным роуту  */
         //  CamelCase or Kebab: AboutPageContent / 'about-page-content'
-
+        LoginPageContent: () => import(
+            /* webpackChunkName: "js/login" */
+            './pages/auth/Login.vue'
+        ),
         AboutPageContent: () => import(
             /* webpackChunkName: "js/about" */
-            './pages/about.vue'
+            './pages/About.vue'
         ),
         DashboardPageContent: () => import(
             /* webpackChunkName: "js/dashboard" */ 
-            './pages/dashboard.vue'
+            './pages/Dashboard.vue'
         ),
+        AxiosExamplePageContent: () => import(
+            /* webpackChunkName: "js/axios-example" */ 
+            './pages/AxiosExample.vue'
+        ),
+        
+        
         WelcomePageContent: () => import(
             /* webpackChunkName: "js/welcome" */ 
-            './pages/welcome.vue'
+            './pages/Welcome.vue'
         ),
         ReportsPageContent: () => import(
             /* webpackChunkName: "js/reports" */ 
-            './pages/reports.vue'
+            './pages/Reports.vue'
         ),
     },
     

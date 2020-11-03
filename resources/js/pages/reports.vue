@@ -1,5 +1,4 @@
 <template>
-    
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -17,14 +16,17 @@
     </div>
 </template>
 <script>
-    import faker from 'faker';
+    
+    import { name, phone, internet } from 'faker';
+    
+    // const faker = require('faker');
 
     class Person {
         constructor() {
-            this.firstName = faker.name.firstName();
-            this.lastName = faker.name.lastName();
-            this.phoneNumber = faker.phone.phoneNumber();
-            this.email = faker.internet.email();
+            this.firstName = name.firstName();
+            this.lastName = name.lastName();
+            this.phoneNumber = phone.phoneNumber();
+            this.email = internet.email();
         }
     }
 
@@ -63,23 +65,9 @@
                     this.peopleArray.unshift(person);
                     console.log(this.peopleArray);
                 }
-                
-                // axios.get("https://pokeapi.co/api/v2/pokemon?limit=100&offset=200")
-                //     .then(function (response) {
-                //         // handle success
-                //         console.log(response);
-                //     })
-                //     .catch(function (error) {
-                //         // handle error
-                //         console.log(error);
-                //     })
-                //     .then(function () {
-                //         // always executed
-                //     });
             }
         },
         mounted() {
-            console.log('Page About component mounted.');
             this.testFetch()
         }
     }

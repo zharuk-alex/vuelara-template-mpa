@@ -5,12 +5,18 @@
     </head> 
     <body class="">
         <app id="app">
+            @if( !empty($aside))
             <template v-slot:aside>
                 <left-aside-drawer :initial-props="{{json_encode($aside)}}"></left-aside-drawer>
             </template>
+            @endif
+            @if( !empty($navbar))
             <template v-slot:navbar>
                 <navbar :initial-props="{{json_encode($navbar)}}"></navbar>
             </template>
+            @endif
+            
+            
             <template v-slot:content>
                 @yield('content')
             </template>
@@ -18,6 +24,6 @@
                 @include('includes.footer')
             </template>
         </app>
-        <script src="{{ mix('js/app.js') }}" defer></script>
+        <script src="{{ mix('js/app.js') }}"></script>
     </body>
 </html>

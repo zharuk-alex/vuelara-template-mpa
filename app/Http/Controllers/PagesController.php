@@ -35,6 +35,22 @@ class PagesController extends Controller
         return view('pages.reports', $data);
     }
 
+    public function formAxiosPage(Request $request)
+    {
+        
+        $data = [
+            "aside" => $this->aside($request),
+            "navbar" => $this->navbar(),
+            "data" => [
+                "title" => "Form Axios",
+                "subtitle" => "Example send formData to Controller using Axios "
+            ]
+        ];
+
+        // dd($data);
+        return view('pages.axios-example', $data);
+    }
+
     public function aboutPage(Request $request){
         $data = array(
             "aside" => $this->aside($request),
@@ -46,6 +62,14 @@ class PagesController extends Controller
         );
         
         return view('pages.about', $data);
+    }
+
+    public function login(){
+        $data = array(
+            "title" => "Welcome"
+        );
+        
+        return view('pages.auth.login', $data);
     }
 
     public function welcomePage(Request $request){
@@ -65,6 +89,7 @@ class PagesController extends Controller
             ["title"=>"Welcome", "url"=>"/welcome", "icon" => "mdi-list"], 
             ["title"=>"About", "url"=>"/about", "icon" => "mdi-help-box"], 
             ["title"=>"Reports", "url"=>"/reports", "icon" => ""],
+            ["title"=>"Axios formData", "url"=>"/axios", "icon" => ""],
         ];
         foreach ($aside as $key => $link) {
             if($link['url'] == '/'.$request->path()){

@@ -1,12 +1,12 @@
 {
     "/js/app.js": "/js/app.js",
-    "/css/main.css": "/css/main.css",
+    "/css/app.css": "/css/app.css",
     "/js/about.js": "/js/about.js",
-    "/js/dash.js": "/js/dash.js",
+    "/js/axios-example.js": "/js/axios-example.js",
+    "/js/dashboard.js": "/js/dashboard.js",
+    "/js/login.js": "/js/login.js",
     "/js/reports.js": "/js/reports.js",
     "/js/welcome.js": "/js/welcome.js",
-    "/vendors~js/reports.js": "/vendors~js/reports.js",
-    "/vendors~js/dash.js": "/vendors~js/dash.js",
-    "/js/dashboard.js": "/js/dashboard.js",
-    "/vendors~js/dashboard.js": "/vendors~js/dashboard.js"
+    "/vendors~js/login.js": "/vendors~js/login.js",
+    "/vendors~js/reports.js": "/vendors~js/reports.js"
 }

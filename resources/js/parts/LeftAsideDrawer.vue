@@ -2,7 +2,7 @@
     <v-navigation-drawer 
       app
       v-model="drawerState"
-      :clipped="$vuetify.breakpoint.mobile"
+      :clipped="$vuetify.breakpoint.mobile"      
       hide-overlay
       class="elevation-1"
     >
@@ -31,7 +31,7 @@
             v-for="(item, i) in initialProps"
             :key="i"
             link
-            :href="item.url"
+            :href="item.path"
           >
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
@@ -50,9 +50,13 @@
   import drawerStore from "../store/LeftAsideDrawer";
 
   export default {
-    props: [
-      "initial-props"
-    ],
+    props: {
+      initialProps: {
+        type: Array,
+        default: [],
+        required: true,
+      },
+    },
     computed:{
       drawerState: {
         get(){
@@ -74,8 +78,7 @@
     },
     mounted(){
       console.log(this.initialProps)
-        // console.log('global store', store);
-        console.log('this store', this.$store);
+      console.log('this store', this.$store);
     },
     created() {
       this.$store.registerModule("leftAsideDrawer", drawerStore);

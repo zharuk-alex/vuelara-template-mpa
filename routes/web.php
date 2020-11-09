@@ -17,9 +17,16 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
+Route::get('menus','App\Http\Controllers\MenuController@index');
+Route::post('menus', 'App\Http\Controllers\MenuController@store')->name('menus.store');
+Route::post('menus/update/{id}', 'App\Http\Controllers\MenuController@update');
+Route::post('menus/destroy/{id}', 'App\Http\Controllers\MenuController@destroy');
+
+// pages
 Route::get('/', 'App\Http\Controllers\PagesController@dashboard');
-Route::get('/login', 'App\Http\Controllers\PagesController@login');
-Route::get('/welcome', 'App\Http\Controllers\PagesController@welcomePage');
-Route::get('/reports', 'App\Http\Controllers\PagesController@reportsPage');
-Route::get('/about', 'App\Http\Controllers\PagesController@aboutPage');
-Route::get('/axios', 'App\Http\Controllers\PagesController@formAxiosPage');
+Route::get('login', 'App\Http\Controllers\PagesController@login');
+Route::get('welcome', 'App\Http\Controllers\PagesController@welcomePage');
+Route::get('reports', 'App\Http\Controllers\PagesController@reportsPage');
+Route::get('about', 'App\Http\Controllers\PagesController@aboutPage');
+Route::get('axios', 'App\Http\Controllers\PagesController@formAxiosPage');
+Route::resource('students', 'App\Http\Controllers\StudentController');

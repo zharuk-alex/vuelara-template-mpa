@@ -6,29 +6,21 @@ import Vuex from 'vuex';
 // import '@mdi/font/css/materialdesignicons.css';
 // import 'vuetify/dist/vuetify.css';
 
-
-Vue.use(Vuetify);
+Vue.use(Vuetify,{
+    theme: {
+        light: true
+    }
+});
 Vue.use(Vuex);
 
 // vue app 
-import App from './app.vue'
+import App from './App.vue'
 const store = new Vuex.Store({ /* options */ })
 
 
 const app = new Vue({
     el: '#app',
-    vuetify: new Vuetify({
-        theme: {
-            themes: {
-                light: {
-                    primary: '#3f51b5',
-                    secondary: '#b0bec5',
-                    accent: '#8c9eff',
-                    error: '#b71c1c',
-                },
-            },
-        },
-    }),
+    vuetify: new Vuetify(),
     store: store,
     components: { 
         App,
@@ -38,6 +30,12 @@ const app = new Vue({
         /* Dynamically loading components  */
         /* Имя vue скрипта должно быть идентичным роуту  */
         //  CamelCase or Kebab: AboutPageContent / 'about-page-content'
+
+        // Main Menu creator
+        MenuTreePageContent: () => import(
+            /* webpackChunkName: "js/login" */
+            './pages/MenuTree.vue'
+        ),
         LoginPageContent: () => import(
             /* webpackChunkName: "js/login" */
             './pages/auth/Login.vue'

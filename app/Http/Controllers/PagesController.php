@@ -6,16 +6,25 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\MenuController;
+
 class PagesController extends Controller
 {
     //
-    public function dashboard(Request $request){
+    protected function AsideMenu($request)
+    {
+        $aside = new MenuController;
+        return $aside->aside($request);
+    }
+
+    public function dashboard(Request $request)
+    {
+        
         $data = array(
-            "aside" => $this->aside($request),
+            "aside" =>  $this->AsideMenu($request),
             "navbar" => $this->navbar(),
             "title" => "Dashboard"
         );
-        // dd($data);
         return view('pages.dashboard', $data);
     }
 
@@ -23,7 +32,7 @@ class PagesController extends Controller
     {
         
         $data = [
-            "aside" => $this->aside($request),
+            "aside" =>  $this->AsideMenu($request),
             "navbar" => $this->navbar(),
             "data" => [
                 "title" => "Reports Page",
@@ -39,7 +48,7 @@ class PagesController extends Controller
     {
         
         $data = [
-            "aside" => $this->aside($request),
+            "aside" =>  $this->AsideMenu($request),
             "navbar" => $this->navbar(),
             "data" => [
                 "title" => "Form Axios",
@@ -51,9 +60,10 @@ class PagesController extends Controller
         return view('pages.axios-example', $data);
     }
 
-    public function aboutPage(Request $request){
+    public function aboutPage(Request $request)
+    {
         $data = array(
-            "aside" => $this->aside($request),
+            "aside" =>  $this->AsideMenu($request),
             "navbar" => $this->navbar(),
             "data" => [
                 "title" => "about Page",
@@ -64,17 +74,10 @@ class PagesController extends Controller
         return view('pages.about', $data);
     }
 
-    public function login(){
+    public function welcomePage(Request $request)
+    {
         $data = array(
-            "title" => "Welcome"
-        );
-        
-        return view('pages.auth.login', $data);
-    }
-
-    public function welcomePage(Request $request){
-        $data = array(
-            "aside" => $this->aside($request),
+            "aside" =>  $this->AsideMenu($request),
             "navbar" => $this->navbar(),
             "title" => "Welcome"
         );
@@ -83,23 +86,6 @@ class PagesController extends Controller
     }
 
     // 
-    protected function aside($request){
-        $aside = [
-            ["title"=>"Dashboard", "url"=>"/", "icon" => "mdi-view-dashboard"], 
-            ["title"=>"Welcome", "url"=>"/welcome", "icon" => "mdi-list"], 
-            ["title"=>"About", "url"=>"/about", "icon" => "mdi-help-box"], 
-            ["title"=>"Reports", "url"=>"/reports", "icon" => ""],
-            ["title"=>"Axios formData", "url"=>"/axios", "icon" => ""],
-        ];
-        foreach ($aside as $key => $link) {
-            if($link['url'] == '/'.$request->path()){
-                $aside[$key]['active'] = true;
-                // dd($link);
-            }
-        } 
-
-        return $aside;
-    }
 
     protected function navbar(){
         return array(

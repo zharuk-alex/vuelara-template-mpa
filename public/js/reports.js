@@ -25,12 +25,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //
 //
 //
-//
-//
-//
-//
-//
- // const faker = require('faker');
+
+var fakeRows = 1000;
 
 var Person = function Person() {
   _classCallCheck(this, Person);
@@ -39,6 +35,11 @@ var Person = function Person() {
   this.lastName = faker__WEBPACK_IMPORTED_MODULE_0__["name"].lastName();
   this.phoneNumber = faker__WEBPACK_IMPORTED_MODULE_0__["phone"].phoneNumber();
   this.email = faker__WEBPACK_IMPORTED_MODULE_0__["internet"].email();
+  this.latitude = faker__WEBPACK_IMPORTED_MODULE_0__["address"].latitude();
+  this.longitude = faker__WEBPACK_IMPORTED_MODULE_0__["address"].longitude();
+  this.county = faker__WEBPACK_IMPORTED_MODULE_0__["address"].county();
+  this.city = faker__WEBPACK_IMPORTED_MODULE_0__["address"].city();
+  this.companyName = faker__WEBPACK_IMPORTED_MODULE_0__["company"].companyName();
 };
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -47,7 +48,11 @@ var Person = function Person() {
   },
   data: function data() {
     return {
-      peopleArray: [],
+      peopleArray: Array.from({
+        length: fakeRows
+      }).map(function (v, k) {
+        return new Person();
+      }),
       headers: [{
         text: 'firstName',
         align: 'start',
@@ -62,29 +67,33 @@ var Person = function Person() {
       }, {
         text: 'email',
         value: 'email'
+      }, {
+        text: 'county',
+        value: 'county'
+      }, {
+        text: 'city',
+        value: 'city'
+      }, {
+        text: 'companyName',
+        value: 'companyName'
+      }, {
+        text: 'latitude',
+        value: 'latitude'
+      }, {
+        text: 'longitude',
+        value: 'longitude'
       }]
     };
   },
   computed: {
     tableHeaders: function tableHeaders() {
-      return Object.keys(this.peopleArray[0]).map(function (key) {
-        console.log(key);
-        return key;
+      return this.peopleArray.map(function (obj) {
+        return _.values(obj);
       });
     }
   },
-  methods: {
-    testFetch: function testFetch() {
-      for (var index = 0; index < 10; index++) {
-        var person = new Person();
-        this.peopleArray.unshift(person);
-        console.log(this.peopleArray);
-      }
-    }
-  },
-  mounted: function mounted() {
-    this.testFetch();
-  }
+  methods: {},
+  mounted: function mounted() {}
 });
 
 /***/ }),
@@ -104,31 +113,27 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "row justify-content-center" }, [
-    _c("div", { staticClass: "col-md-8" }, [
-      _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header" }, [
-          _vm._v("Reports Pages Component")
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "card-body" },
-          [
-            _c("v-data-table", {
-              staticClass: "elevation-1",
-              attrs: {
-                headers: _vm.headers,
-                items: _vm.peopleArray,
-                "items-per-page": 5
-              }
-            })
-          ],
-          1
-        )
-      ])
-    ])
-  ])
+  return _c(
+    "v-row",
+    { attrs: { justify: "center" } },
+    [
+      _c(
+        "v-col",
+        [
+          _c("v-data-table", {
+            staticClass: "elevation-1",
+            attrs: {
+              headers: _vm.headers,
+              items: _vm.peopleArray,
+              "items-per-page": 5
+            }
+          })
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

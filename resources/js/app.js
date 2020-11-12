@@ -5,13 +5,38 @@ import Vuetify from 'vuetify'
 import Vuex from 'vuex';
 // import '@mdi/font/css/materialdesignicons.css';
 // import 'vuetify/dist/vuetify.css';
+import PerfectScrollbar from 'vue2-perfect-scrollbar'
+import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
+    
+import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
+import VuetifyConfirm from 'vuetify-confirm'
+
+
+
 
 Vue.use(Vuetify,{
     theme: {
         light: true
     }
 });
-Vue.use(Vuex);
+
+Vue.use(VuetifyConfirm, {
+    Vuetify,
+    buttonTrueText: 'Accept',
+    buttonFalseText: 'Discard',
+    buttonTrueColor: 'primary',
+    buttonFalseColor: 'grey',
+    buttonTrueFlat: false,
+    buttonFalseFlat: true,
+    color: 'warning',
+    icon: 'warning',
+    title: 'Warning',
+    width: 350,
+    property: '$confirm'
+  })
+Vue.use(VuetifyDraggableTreeview)
+Vue.use(PerfectScrollbar)
+Vue.use(Vuex)
 
 // vue app 
 import App from './App.vue'
@@ -24,7 +49,7 @@ const app = new Vue({
     store: store,
     components: { 
         App,
-        LeftAsideDrawer: require('./parts/LeftAsideDrawer.vue').default,
+        AsideDrawer: require('./parts/AsideDrawer.vue').default,
         Navbar: require('./parts/Navbar.vue').default,
 
         /* Dynamically loading components  */
@@ -33,7 +58,7 @@ const app = new Vue({
 
         // Main Menu creator
         MenuTreePageContent: () => import(
-            /* webpackChunkName: "js/login" */
+            /* webpackChunkName: "js/menuTree" */
             './pages/MenuTree.vue'
         ),
         LoginPageContent: () => import(

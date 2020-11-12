@@ -34,8 +34,9 @@ class PagesController extends Controller
         $data = [
             "aside" =>  $this->AsideMenu($request),
             "navbar" => $this->navbar(),
+            "title" => "Reports Page",
             "data" => [
-                "title" => "Reports Page",
+                
                 "subtitle" => "Some data from PagesController"
             ]
         ];
@@ -65,8 +66,8 @@ class PagesController extends Controller
         $data = array(
             "aside" =>  $this->AsideMenu($request),
             "navbar" => $this->navbar(),
+            "title" => "about Page",
             "data" => [
-                "title" => "about Page",
                 "subtitle" => "Long page descriptions description Lorem Ipsum"
             ]
         );

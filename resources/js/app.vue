@@ -1,13 +1,13 @@
 <template>    
     <v-app>
-        <slot name="aside"></slot>
         <slot name="navbar"></slot>
+        <slot name="aside"></slot>
         <v-main>
             <v-container fluid>
-                <slot name="content"></slot>
+                <slot name="content" class="text-center"></slot>
             </v-container>
         </v-main>
-        <v-footer app>
+        <v-footer app inset>
             <slot name="footer"></slot>
         </v-footer>
     </v-app>
@@ -17,7 +17,7 @@ export default {
   computed: {},
   data() {
       return {
-          message:'App.vue'
+          message:'App.vue',
       }
   }
 };

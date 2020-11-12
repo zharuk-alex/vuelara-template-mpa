@@ -1,6 +1,6 @@
 export default {
     state: {
-        drawerState: true
+        drawerState: null
     },
     mutations: {
       setDrawer(state, payload){

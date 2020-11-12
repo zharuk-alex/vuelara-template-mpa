@@ -5,8 +5,10 @@
     "/js/axios-example.js": "/js/axios-example.js",
     "/js/dashboard.js": "/js/dashboard.js",
     "/js/login.js": "/js/login.js",
+    "/js/menuTree.js": "/js/menuTree.js",
     "/js/reports.js": "/js/reports.js",
     "/js/welcome.js": "/js/welcome.js",
-    "/vendors~js/login.js": "/vendors~js/login.js",
+    "/vendors~js/login~js/menuTree.js": "/vendors~js/login~js/menuTree.js",
+    "/vendors~js/menuTree.js": "/vendors~js/menuTree.js",
     "/vendors~js/reports.js": "/vendors~js/reports.js"
 }

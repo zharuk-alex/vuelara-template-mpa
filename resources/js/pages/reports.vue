@@ -1,32 +1,29 @@
 <template>
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Reports Pages Component</div>
-                <div class="card-body">
-                    <v-data-table
-                        :headers="headers"
-                        :items="peopleArray"
-                        :items-per-page="5"
-                        class="elevation-1"
-                    ></v-data-table>
-                </div>
-            </div>
-        </div>
-    </div>
+    <v-row justify="center">
+        <v-col>
+            <v-data-table
+                :headers="headers"
+                :items="peopleArray"
+                :items-per-page="5"
+                class="elevation-1"
+            ></v-data-table>
+        </v-col>
+    </v-row>
 </template>
 <script>
-    
-    import { name, phone, internet } from 'faker';
-    
-    // const faker = require('faker');
-
+    import { name, phone, internet, address, company } from 'faker';
+    const fakeRows = 1000;
     class Person {
         constructor() {
             this.firstName = name.firstName();
             this.lastName = name.lastName();
             this.phoneNumber = phone.phoneNumber();
             this.email = internet.email();
+            this.latitude = address.latitude();
+            this.longitude = address.longitude();
+            this.county = address.county();
+            this.city = address.city();
+            this.companyName = company.companyName();
         }
     }
 
@@ -36,7 +33,7 @@
         },
        data() {
             return {
-                peopleArray: [],
+                peopleArray: Array.from({ length: fakeRows }).map((v, k) => new Person()),
                 headers: [
                     {
                         text: 'firstName',
@@ -46,29 +43,25 @@
                     },
                     { text: 'lastName', value: 'lastName' },
                     { text: 'phoneNumber', value: 'phoneNumber' },
-                    { text: 'email', value: 'email' }
+                    { text: 'email', value: 'email' },
+                    { text: 'county', value: 'county' },
+                    { text: 'city', value: 'city' },
+                    { text: 'companyName', value: 'companyName' },
+                    { text: 'latitude', value: 'latitude' },
+                    { text: 'longitude', value: 'longitude' }
                 ]
             }
         },
         computed:{
             tableHeaders(){
-                return Object.keys(this.peopleArray[0]).map(key=>{
-                    console.log(key);
-                    return key;
-                })
+                return this.peopleArray.map(obj => _.values(obj));
             }
         },
         methods:{
-            testFetch(){
-                for (let index = 0; index < 10; index++) {
-                    let person = new Person();
-                    this.peopleArray.unshift(person);
-                    console.log(this.peopleArray);
-                }
-            }
+            
         },
         mounted() {
-            this.testFetch()
+            
         }
     }
 </script>

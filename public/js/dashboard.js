@@ -36,8 +36,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
     console.log('Page Dashboard component mounted.');
@@ -62,47 +60,41 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-container",
+    "v-row",
+    { attrs: { justify: "center" } },
     [
-      _c(
-        "v-row",
-        { attrs: { justify: "center" } },
-        [
-          _c("v-col", { attrs: { cols: "12" } }, [
-            _c("h2", { staticClass: "scoped-scss" }, [
-              _vm._v("Test Scoped SCSS style")
-            ])
-          ]),
-          _vm._v(" "),
-          _vm._l(25, function(n) {
-            return _c(
-              "v-col",
-              { key: n, attrs: { cols: "auto" } },
+      _c("v-col", { attrs: { cols: "12" } }, [
+        _c("h2", { staticClass: "scoped-scss" }, [
+          _vm._v("Test Scoped SCSS style")
+        ])
+      ]),
+      _vm._v(" "),
+      _vm._l(25, function(n) {
+        return _c(
+          "v-col",
+          { key: n, attrs: { cols: "auto" } },
+          [
+            _c(
+              "v-card",
+              {
+                staticClass: "secondary",
+                attrs: { elevation: n - 1, height: "100", width: "100" }
+              },
               [
-                _c(
-                  "v-card",
-                  {
-                    staticClass: "secondary",
-                    attrs: { elevation: n - 1, height: "100", width: "100" }
-                  },
-                  [
-                    _c("v-row", {
-                      staticClass: "fill-height",
-                      attrs: { align: "center", justify: "center" },
-                      domProps: { textContent: _vm._s(n - 1) }
-                    })
-                  ],
-                  1
-                )
+                _c("v-row", {
+                  staticClass: "fill-height",
+                  attrs: { align: "center", justify: "center" },
+                  domProps: { textContent: _vm._s(n - 1) }
+                })
               ],
               1
             )
-          })
-        ],
-        2
-      )
+          ],
+          1
+        )
+      })
     ],
-    1
+    2
   )
 }
 var staticRenderFns = []

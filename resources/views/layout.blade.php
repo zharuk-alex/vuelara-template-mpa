@@ -7,16 +7,17 @@
         <app id="app">
             @if( !empty($aside))
             <template v-slot:aside>
-                <left-aside-drawer :initial-props="{{json_encode($aside)}}"></left-aside-drawer>
+                <aside-drawer :initial-props="{{json_encode($aside)}}"></aside-drawer>
             </template>
             @endif
             @if( !empty($navbar))
             <template v-slot:navbar>
-                <navbar :initial-props="{{json_encode($navbar)}}"></navbar>
+                <navbar 
+                    :initial-props="{{json_encode($navbar)}}"
+                    :page-title="{{json_encode($title)}}"
+                ></navbar>
             </template>
             @endif
-            
-            
             <template v-slot:content>
                 @yield('content')
             </template>

@@ -1,5 +1,4 @@
 <template>
-  <v-container>
 	<v-row justify="center">
 	  <v-col cols="12">
 		<h2 class="scoped-scss">Test Scoped SCSS style</h2>
@@ -25,7 +24,6 @@
 		</v-card>
 	  </v-col>
 	</v-row>
-  </v-container>
 </template>
 <script>
 	export default {

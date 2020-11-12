@@ -11,26 +11,30 @@
                     <!-- {{initialProps}} -->
                     <v-row>
                         <v-col>
-                            <div class="green darken-2 py-2 text-center">
-                                <h3 class="white--text" v-text="ActiveMenuItem"></h3>
-                            </div>
-
-                            <template>
-                                <v-expansion-panels>
-                                    <v-expansion-panel>
-                                        <v-expansion-panel-header>
-                                            <template v-slot:actions>
-                                                <v-icon color="info">
-                                                mdi-information-outline
-                                                </v-icon>
-                                            </template>
-                                        </v-expansion-panel-header>
-                                        <v-expansion-panel-content>
+                            
+   
+                                
+                            <v-expansion-panels>
+                                <v-expansion-panel>
+                                    <v-expansion-panel-header>
+                                        <h3 class="dark--text" v-text="actionTitle"></h3>
+                                        <template v-slot:actions>
+                                            <v-icon color="info">
+                                            mdi-information-outline
+                                            </v-icon>
+                                        </template>
+                                    </v-expansion-panel-header>
+                                    <v-expansion-panel-content>
+                                        <p><a href="https://v-draggable-treeview.netlify.app/" target="_blank">v-draggable-treeview</a></p>
                                         <p><strong>action url:</strong>{{actionRoute}}</p>
                                         <p><strong>data to url:</strong>{{formModel}}</p>
-                                        </v-expansion-panel-content>
-                                    </v-expansion-panel>
-                                </v-expansion-panels>
+                                    </v-expansion-panel-content>
+                                </v-expansion-panel>
+                            </v-expansion-panels>
+   
+                            
+
+                            <template>
                                 <v-form 
                                     ref="form" 
                                      
@@ -65,7 +69,7 @@
                                     </v-text-field>
 
                                     <v-select v-model="formModel.parent_id" name="parent_id" :items="ParentOnly"
-                                        item-value="id" label="Parent">
+                                        item-value="id" clearable label="Parent">
                                     </v-select>
 
                                     <v-btn elevation="4" height="50" width="50" @click.stop="showIconDialog=true">
@@ -86,20 +90,85 @@
                                     </v-checkbox>
                                     <!-- {{formModel}} -->
                                     <v-btn :disabled="!formIsValid" color="success" class="mr-4" @click="handleSubmit">
+                                        <v-icon left>mdi-check</v-icon>
                                         Save
                                     </v-btn>
+                                    <v-btn color="warning" class="mr-4" @click="handleClear">
+                                        <v-icon left>mdi-undo</v-icon>
+                                        Reset
+                                    </v-btn>
+                                    <confirmation-dialog 
+                                        activator-text="Удалить"
+                                        activator-color="error"
+                                        activator-icon="mdi-trash-can-outline"
+                                        msg-text="Вы уверены что хотите удалить?"
+                                    ></confirmation-dialog>
                                 </v-form>
                             </template>
                         </v-col>
                         <v-col>
-                            <div class="blue darken-2 py-2 text-center">
-                                <h3 class="white--text">Menu List</h3>
-                            </div>
-                            <p>*<small> select item to edit</small></p>
-                            <v-treeview v-model="selectedMenu" :items="menu" selection-type="leaf" selectable hoverable
-                                return-object open-all item-key="id" item-text="title" activatable color="accent"
-                                @update:active="onUpdateMenuItem" v-click-outside="onUpdateMenuItem">
-                            </v-treeview>
+                            <v-sheet dark color="blue darken-2" class="rounded-sm py-2 text-center" elevation="2" >
+                                <h3>Menu List</h3>
+                            </v-sheet>
+                            <p>*<small class="blue--text text--lighten-1"> select item to edit / drag`n`drop for reordering</small></p>
+                            <v-draggable-treeview 
+                                v-model="menus" 
+                                @input="inputDrag"
+                            >
+                                <!-- eslint-disable-next-line vue/no-unused-vars -->
+                                <template v-slot:prepend="{ item }">
+                                    <v-icon>{{item.icon}}</v-icon>
+                                </template>
+                                <template v-slot:label="{ item }">
+                                    
+                                    <v-hover  v-slot="{ hover }" >
+                                        <div 
+                                            class="h-100 d-flex align-center ml-3" 
+                                            @click.stop="handlerClickOnTreeMenuItem(item)"
+                                        >
+                                            <span v-text="item.title"></span>
+                                            <v-icon v-show="hover" 
+                                                class="ml-auto" 
+                                                v-text="'mdi-drag-horizontal-variant'"
+                                            ></v-icon>
+                                        </div>
+                                    </v-hover>
+                                </template>
+                                <template v-slot:append="{ item }">
+                                    <template
+                                    v-if="item.children != null && item.children.length > 0"
+                                    >
+                                    has {{ item.children.length }} children
+                                    </template>
+                                </template>
+                            </v-draggable-treeview>
+                            <v-divider class="my-3"></v-divider>
+                            <v-alert
+                                :value="alert"
+                                color="pink"
+                                dark
+                                border="top"
+                                icon="mdi-home"
+                                transition="scale-transition"
+                                >
+                                Menu items have been reordering.<br>
+                                Save changes?
+                                <v-divider></v-divider>
+                                <v-btn
+                                    size="sm"
+                                    color="warning"
+                                    @click="confirmationTest"
+                                >
+                                    <v-icon v-text="'mdi-cancel'"></v-icon>
+                                </v-btn>
+                                <v-btn
+                                    size="sm"
+                                    color="success"
+                                    @click="dialog = false"
+                                >
+                                    <v-icon v-text="'mdi-check'"></v-icon>
+                                </v-btn>
+                            </v-alert>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -108,11 +177,24 @@
     </v-row>
 </template>
 <script>
+    import Vue from "vue";
     import _ from "lodash";
     import { validationMixin } from 'vuelidate'
     import { required, maxLength } from 'vuelidate/lib/validators'
-    import dialogIconGrid from '../components/dialogIconsGrid';
-
+    import DialogIconGrid from '../components/DialogIconsGrid';
+    import ConfirmationDialog from '../components/ConfirmationDialog'
+    import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
+    import VuetifyConfirm from 'vuetify-confirm'
+    
+    Vue.use(VuetifyConfirm, {
+        buttonTrueText: 'Accept',
+        buttonFalseText: 'Discard',
+        color: 'warning',
+        icon: 'warning',
+        title: 'Warning',
+        width: 350,
+        property: '$confirm'
+    })
     export default {
         props: {
             homeRoute: String,
@@ -128,12 +210,15 @@
             
         },
         components: {
-            dialogIconGrid
+            DialogIconGrid, 
+            ConfirmationDialog,
+            VuetifyDraggableTreeview
         },
         data() {
             return {
                 currentActiveMenuItem: null,
-                actionsTypes: {
+                alert: true,
+                TEXT: {
                     edit: {
                         title: "Edit menu item",
                     },
@@ -142,18 +227,17 @@
                     }
                 },
                 csrf: document.head.querySelector('meta[name="csrf-token"]').content,
-                menu: [],
+                menus: [],
                 formIsValid: true,
-                // defaultFormModel: _.clone(this.formModel),
                 formModel: {
                     id: null,
                     title: "",
                     path: "",
                     parent_id: 0,
                     icon: "",
-                    isBlocked: false
+                    isBlocked: false,
+                    order: null
                 },
-                
                 selectedMenu: [],
                 showIconDialog: false
             }
@@ -172,21 +256,15 @@
                     method = "PUT";
                 }
             },
-            menuTitle(){
-                return formModel.title
-            },
-            menuPath(){
-                return formModel.path
-            },
-            ActiveMenuItem() {
-                let title = this.actionsTypes.add.title;
+            actionTitle() {
+                let title = this.TEXT.add.title;
                 if (this.currentActiveMenuItem) {
-                    title = this.actionsTypes.edit.title + ` "${this.currentActiveMenuItem.title.toUpperCase()}"`;
+                    title = this.TEXT.edit.title + ` "${this.currentActiveMenuItem.title.toUpperCase()}"`;
                 }
                 return title;
             },
             ParentOnly() {
-                return this.menu.filter(m => !m.parent_id).map(m => ({
+                return this.menus.filter(m => !m.parent_id).map(m => ({
                     id: m.id,
                     text: m.title
                 }));
@@ -201,29 +279,37 @@
             pathErrors () {
                 const errors = []
                 if (!this.$v.formModel.path.$dirty) return errors
-                // !this.$v.menuTitle.email && errors.push('Must be valid e-mail')
                 !this.$v.formModel.path.required && errors.push('Path is required')
                 return errors
             },
         },
         methods: {
-            onUpdateMenuItem(value) {
-                if (value.length) {
-                    this.currentActiveMenuItem = value[0];
+            handlerClickOnTreeMenuItem(value, $event){
+                console.log('click', value);
+                
+                let notEmpty = _.values(value).some(x => x !== undefined);
+                if (notEmpty) {
+                    this.currentActiveMenuItem = value;
                     Object.keys(this.currentActiveMenuItem).forEach(key => {
                         if (key in this.formModel) {
                             this.formModel[key] = this.currentActiveMenuItem[key];
                         }
                     });
-                } else {
-                    this.currentActiveMenuItem = null;
                     this.formIsValid = true;
-                }
+                } 
+            },
+            inputDrag(value){
+                console.log('inputDrag',value);
+                var result = _.cloneDeepWith(value, function(v) {
+                    if(!_.isObject(v)) {
+                        return false;
+                    }
+                });
+                console.log('result',result);
             },
             onIconSelect(icon) {
                 this.formModel.icon = icon;
                 this.showIconDialog = false;
-                console.log(this.formModel);
             },
             handleSubmit () {
                 // stop here if form is invalid
@@ -234,16 +320,31 @@
                     this.$refs.form.$el.submit();
                 }
             },
-            clear () {
-                // this.$v.$reset()
-                // this.formModel.title = ''
-                // this.formModel.email = ''
-                // this.formModel.parent_id = 0
-                // this.formModel.isBlocked = false
+            handleClear () {
+                this.$v.$reset()
+                this.formModel = {
+                    id: null,
+                    title: "",
+                    path: "",
+                    parent_id: 0,
+                    icon: "",
+                    isBlocked: false,
+                    order: null
+                }
+                this.currentActiveMenuItem = 0;
             },
+            handleDeleteMenu(){
+                console.log(this.currentActiveMenuItem);
+            },
+            confirmationTest(){
+                this.$confirm('Do you really want to exit?').then(res => {
+                    console.log(res)
+                })
+            }
         },
         mounted() {
-            this.menu = this.initialProps;
+            this.menus = this.initialProps;
+            console.log(this.initialProps)
         }
     }
 

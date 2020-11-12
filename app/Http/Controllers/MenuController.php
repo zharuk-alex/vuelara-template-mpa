@@ -11,11 +11,11 @@ class MenuController extends Controller
 {
 
     public function index(Request $request){
-        $menus = Menu::where('parent_id', '=', 0)->orderBy('order', 'desc')->get();
-        foreach ($menus as $menu) {
-            $menu['children']=$menu->childs;
+        $menus = Menu::where('parent_id', '=', 0)->get();
+        foreach ($menus as $key => $menu) 
+        {
+            $menu->children;
         }
-        
         $data = array(
             "aside" => $this->aside($request),
             'menus'=> $menus,
@@ -64,13 +64,15 @@ class MenuController extends Controller
     }
 
     public function aside($request){
-        $menus =  Menu::where('parent_id', '=', 0)->get()->keyBy('id')->toArray();
-
-        foreach ($menus as $key => $menu) {
-            if($menu['path'] == $request->path()){
-                $menus[$key]['active'] = true;
+        $menus = Menu::where('parent_id', '=', 0)->get();
+        foreach ($menus as $key => $menu) 
+        {
+            $menu->children;
+            if($menu['path'] == $request->path())
+            {
+                $menu['active'] = true;
             }
-        } 
-        return array_values($menus);
+        }
+        return $menus;
     }
 }

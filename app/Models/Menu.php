@@ -11,7 +11,7 @@ class Menu extends Model
 
     protected $fillable = ['title','parent_id','path', 'icon', 'isblocked', 'order'];
 
-    public function childs() {
+    public function children() {
         return $this->hasMany('App\Models\Menu','parent_id','id') ;
     }
 }

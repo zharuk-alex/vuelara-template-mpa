@@ -217,171 +217,178 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate */ "./node_modules/vuelidate/lib/index.js");
-/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
-/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/DialogIconsGrid */ "./resources/js/components/DialogIconsGrid.vue");
-/* harmony import */ var _components_ConfirmationDialog__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/ConfirmationDialog */ "./resources/js/components/ConfirmationDialog.vue");
-/* harmony import */ var vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuetify-draggable-treeview */ "./node_modules/vuetify-draggable-treeview/dist/v-draggable-treeview.esm.js");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuelidate */ "./node_modules/vuelidate/lib/index.js");
+/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuelidate__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/DialogIconsGrid */ "./resources/js/components/DialogIconsGrid.vue");
+/* harmony import */ var _components_ConfirmationDialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/ConfirmationDialog */ "./resources/js/components/ConfirmationDialog.vue");
+/* harmony import */ var vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuetify-draggable-treeview */ "./node_modules/vuetify-draggable-treeview/dist/v-draggable-treeview.esm.js");
 
 
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -392,22 +399,22 @@ __webpack_require__.r(__webpack_exports__);
     homeRoute: String,
     initialProps: [Array, Object]
   },
-  mixins: [vuelidate__WEBPACK_IMPORTED_MODULE_2__["validationMixin"]],
+  mixins: [vuelidate__WEBPACK_IMPORTED_MODULE_1__["validationMixin"]],
   validations: {
     formModel: {
       title: {
-        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["required"],
-        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["maxLength"])(24)
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
+        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(24)
       },
       path: {
-        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_3__["required"]
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"]
       }
     }
   },
   components: {
-    DialogIconGrid: _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_4__["default"],
-    ConfirmationDialog: _components_ConfirmationDialog__WEBPACK_IMPORTED_MODULE_5__["default"],
-    VuetifyDraggableTreeview: vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_6__["default"]
+    DialogIconGrid: _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_3__["default"],
+    ConfirmationDialog: _components_ConfirmationDialog__WEBPACK_IMPORTED_MODULE_4__["default"],
+    VuetifyDraggableTreeview: vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_5__["default"]
   },
   data: function data() {
     return {
@@ -493,7 +500,7 @@ __webpack_require__.r(__webpack_exports__);
 
       console.log('click', value);
 
-      var notEmpty = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.values(value).some(function (x) {
+      var notEmpty = _.values(value).some(function (x) {
         return x !== undefined;
       });
 
@@ -510,8 +517,8 @@ __webpack_require__.r(__webpack_exports__);
     inputDrag: function inputDrag(value) {
       console.log('inputDrag', value);
 
-      var result = lodash__WEBPACK_IMPORTED_MODULE_1___default.a.cloneDeepWith(value, function (v) {
-        if (!lodash__WEBPACK_IMPORTED_MODULE_1___default.a.isObject(v)) {
+      var result = _.cloneDeepWith(value, function (v) {
+        if (!_.isObject(v)) {
           return false;
         }
       });
@@ -545,14 +552,45 @@ __webpack_require__.r(__webpack_exports__);
       };
       this.currentActiveMenuItem = 0;
     },
-    handleDeleteMenu: function handleDeleteMenu() {
-      console.log(this.currentActiveMenuItem);
-    },
     confirmationTest: function confirmationTest() {
       this.$confirm('Do you really want to exit?').then(function (res) {
         console.log(res);
       });
-    }
+    },
+    handleDeleteMenu: function () {
+      var _handleDeleteMenu = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                console.log(this.$vuetify);
+                _context.next = 3;
+                return this.$confirm('Do you really want to exit?', {
+                  title: 'Warning'
+                });
+
+              case 3:
+                res = _context.sent;
+
+                if (res) {
+                  console.log('aaa');
+                }
+
+              case 5:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function handleDeleteMenu() {
+        return _handleDeleteMenu.apply(this, arguments);
+      }
+
+      return handleDeleteMenu;
+    }()
   },
   mounted: function mounted() {
     this.menus = this.initialProps;
@@ -1257,14 +1295,23 @@ var render = function() {
                                   1
                                 ),
                                 _vm._v(" "),
-                                _c("confirmation-dialog", {
-                                  attrs: {
-                                    "activator-text": "Удалить",
-                                    "activator-color": "error",
-                                    "activator-icon": "mdi-trash-can-outline",
-                                    "msg-text": "Вы уверены что хотите удалить?"
-                                  }
-                                })
+                                _c(
+                                  "v-btn",
+                                  {
+                                    staticClass: "mr-4",
+                                    attrs: { color: "error" },
+                                    on: { click: _vm.handleDeleteMenu }
+                                  },
+                                  [
+                                    _c("v-icon", { attrs: { left: "" } }, [
+                                      _vm._v("mdi-trash-can-outline")
+                                    ]),
+                                    _vm._v(
+                                      "\n                                    Delete\n                                "
+                                    )
+                                  ],
+                                  1
+                                )
                               ],
                               1
                             )

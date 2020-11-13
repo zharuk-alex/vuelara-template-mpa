@@ -97,12 +97,17 @@
                                         <v-icon left>mdi-undo</v-icon>
                                         Reset
                                     </v-btn>
-                                    <confirmation-dialog 
+                                    <v-btn color="error" class="mr-4" @click="handleDeleteMenu">
+                                        <v-icon left>mdi-trash-can-outline</v-icon>
+                                        Delete
+                                    </v-btn>
+
+                                    <!-- <confirmation-dialog 
                                         activator-text="Удалить"
                                         activator-color="error"
                                         activator-icon="mdi-trash-can-outline"
                                         msg-text="Вы уверены что хотите удалить?"
-                                    ></confirmation-dialog>
+                                    ></confirmation-dialog> -->
                                 </v-form>
                             </template>
                         </v-col>
@@ -151,8 +156,6 @@
     </v-row>
 </template>
 <script>
-    import Vue from "vue";
-    import _ from "lodash";
     import { validationMixin } from 'vuelidate'
     import { required, maxLength } from 'vuelidate/lib/validators'
     import DialogIconGrid from '../components/DialogIconsGrid';
@@ -297,13 +300,17 @@
                 }
                 this.currentActiveMenuItem = 0;
             },
-            handleDeleteMenu(){
-                console.log(this.currentActiveMenuItem);
-            },
             confirmationTest(){
                 this.$confirm('Do you really want to exit?').then(res => {
                     console.log(res)
                 })
+            },
+            handleDeleteMenu: async function () {
+                console.log(this.$vuetify);
+                let res = await this.$confirm('Do you really want to exit?', { title: 'Warning' });
+                if (res) {
+                    console.log('aaa');
+                }
             }
         },
         mounted() {

@@ -1,27 +1,14 @@
-// require('./bootstrap');
-import Vue from 'vue' 
-import Vuetify from 'vuetify'
-// import Vuetify from 'vuetify/lib'
+require('./bootstrap');
+
+import vuetify from './plugins/vuetify' // path to vuetify export
 import Vuex from 'vuex';
-// import '@mdi/font/css/materialdesignicons.css';
-// import 'vuetify/dist/vuetify.css';
 import PerfectScrollbar from 'vue2-perfect-scrollbar'
 import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
-    
-import 'vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css'
 import VuetifyConfirm from 'vuetify-confirm'
 
 
-
-
-Vue.use(Vuetify,{
-    theme: {
-        light: true
-    }
-});
-
 Vue.use(VuetifyConfirm, {
-    Vuetify,
+    vuetify,
     buttonTrueText: 'Accept',
     buttonFalseText: 'Discard',
     buttonTrueColor: 'primary',
@@ -40,13 +27,10 @@ Vue.use(Vuex)
 
 // vue app 
 import App from './App.vue'
-const store = new Vuex.Store({ /* options */ })
-
 
 const app = new Vue({
-    el: '#app',
-    vuetify: new Vuetify(),
-    store: store,
+    vuetify,
+    store: new Vuex.Store({ /* options */ }),
     components: { 
         App,
         AsideDrawer: require('./parts/AsideDrawer.vue').default,
@@ -89,4 +73,4 @@ const app = new Vue({
         ),
     },
     
-});
+}).$mount('#app');

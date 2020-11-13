@@ -143,32 +143,6 @@
                                 </template>
                             </v-draggable-treeview>
                             <v-divider class="my-3"></v-divider>
-                            <v-alert
-                                :value="alert"
-                                color="pink"
-                                dark
-                                border="top"
-                                icon="mdi-home"
-                                transition="scale-transition"
-                                >
-                                Menu items have been reordering.<br>
-                                Save changes?
-                                <v-divider></v-divider>
-                                <v-btn
-                                    size="sm"
-                                    color="warning"
-                                    @click="confirmationTest"
-                                >
-                                    <v-icon v-text="'mdi-cancel'"></v-icon>
-                                </v-btn>
-                                <v-btn
-                                    size="sm"
-                                    color="success"
-                                    @click="dialog = false"
-                                >
-                                    <v-icon v-text="'mdi-check'"></v-icon>
-                                </v-btn>
-                            </v-alert>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -184,17 +158,7 @@
     import DialogIconGrid from '../components/DialogIconsGrid';
     import ConfirmationDialog from '../components/ConfirmationDialog'
     import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
-    import VuetifyConfirm from 'vuetify-confirm'
     
-    Vue.use(VuetifyConfirm, {
-        buttonTrueText: 'Accept',
-        buttonFalseText: 'Discard',
-        color: 'warning',
-        icon: 'warning',
-        title: 'Warning',
-        width: 350,
-        property: '$confirm'
-    })
     export default {
         props: {
             homeRoute: String,

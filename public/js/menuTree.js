@@ -228,34 +228,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/DialogIconsGrid */ "./resources/js/components/DialogIconsGrid.vue");
 /* harmony import */ var _components_ConfirmationDialog__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/ConfirmationDialog */ "./resources/js/components/ConfirmationDialog.vue");
 /* harmony import */ var vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuetify-draggable-treeview */ "./node_modules/vuetify-draggable-treeview/dist/v-draggable-treeview.esm.js");
-/* harmony import */ var vuetify_confirm__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! vuetify-confirm */ "./node_modules/vuetify-confirm/dist/vuetify-confirm.js");
-/* harmony import */ var vuetify_confirm__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(vuetify_confirm__WEBPACK_IMPORTED_MODULE_7__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -415,16 +387,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify_confirm__WEBPACK_IMPORTED_MODULE_7___default.a, {
-  buttonTrueText: 'Accept',
-  buttonFalseText: 'Discard',
-  color: 'warning',
-  icon: 'warning',
-  title: 'Warning',
-  width: 350,
-  property: '$confirm'
-});
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     homeRoute: String,
@@ -1446,68 +1408,7 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
-                          _c("v-divider", { staticClass: "my-3" }),
-                          _vm._v(" "),
-                          _c(
-                            "v-alert",
-                            {
-                              attrs: {
-                                value: _vm.alert,
-                                color: "pink",
-                                dark: "",
-                                border: "top",
-                                icon: "mdi-home",
-                                transition: "scale-transition"
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                            Menu items have been reordering."
-                              ),
-                              _c("br"),
-                              _vm._v(
-                                "\n                            Save changes?\n                            "
-                              ),
-                              _c("v-divider"),
-                              _vm._v(" "),
-                              _c(
-                                "v-btn",
-                                {
-                                  attrs: { size: "sm", color: "warning" },
-                                  on: { click: _vm.confirmationTest }
-                                },
-                                [
-                                  _c("v-icon", {
-                                    domProps: {
-                                      textContent: _vm._s("mdi-cancel")
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-btn",
-                                {
-                                  attrs: { size: "sm", color: "success" },
-                                  on: {
-                                    click: function($event) {
-                                      _vm.dialog = false
-                                    }
-                                  }
-                                },
-                                [
-                                  _c("v-icon", {
-                                    domProps: {
-                                      textContent: _vm._s("mdi-check")
-                                    }
-                                  })
-                                ],
-                                1
-                              )
-                            ],
-                            1
-                          )
+                          _c("v-divider", { staticClass: "my-3" })
                         ],
                         1
                       )

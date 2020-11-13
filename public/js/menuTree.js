@@ -1,85 +1,5 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([["js/menuTree"],{
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ConfirmationDialog.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ConfirmationDialog.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    activatorText: {
-      type: String,
-      "default": "Подтвердить"
-    },
-    activatorColor: {
-      type: String,
-      "default": "primary"
-    },
-    activatorIcon: {
-      type: String
-    },
-    msgText: {
-      type: String,
-      "default": "Подтвердить изменения ?"
-    }
-  },
-  data: function data() {
-    return {
-      dialog: false
-    };
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/DialogIconsGrid.vue?vue&type=script&lang=js&":
 /*!**************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/DialogIconsGrid.vue?vue&type=script&lang=js& ***!
@@ -224,8 +144,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/DialogIconsGrid */ "./resources/js/components/DialogIconsGrid.vue");
-/* harmony import */ var _components_ConfirmationDialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/ConfirmationDialog */ "./resources/js/components/ConfirmationDialog.vue");
-/* harmony import */ var vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuetify-draggable-treeview */ "./node_modules/vuetify-draggable-treeview/dist/v-draggable-treeview.esm.js");
+/* harmony import */ var vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuetify-draggable-treeview */ "./node_modules/vuetify-draggable-treeview/dist/v-draggable-treeview.esm.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -389,7 +308,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
-
+//
+//
 
 
 
@@ -407,29 +327,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(24)
       },
       path: {
-        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"]
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
+        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(24)
       }
     }
   },
   components: {
     DialogIconGrid: _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_3__["default"],
-    ConfirmationDialog: _components_ConfirmationDialog__WEBPACK_IMPORTED_MODULE_4__["default"],
-    VuetifyDraggableTreeview: vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_5__["default"]
+    VuetifyDraggableTreeview: vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   data: function data() {
     return {
       currentActiveMenuItem: null,
-      alert: true,
       TEXT: {
         edit: {
           title: "Edit menu item"
         },
         add: {
           title: "Add NEW menu item"
+        },
+        deleteItemMenu: {
+          title: "Warning!!!",
+          msg: "Do you realy want to DELETE item ?"
         }
       },
       csrf: document.head.querySelector('meta[name="csrf-token"]').content,
       menus: [],
+      activeFormMethod: null,
+      formMethods: {
+        create: "post",
+        update: "put/patch",
+        destroy: "delete"
+      },
       formIsValid: true,
       formModel: {
         id: null,
@@ -445,21 +374,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   computed: {
+    ResetableForm: function ResetableForm() {
+      return Boolean(this.currentActiveMenuItem) || !_.every(this.formModel, _.isEmpty);
+    },
     actionRoute: function actionRoute() {
       var actionurl = this.homeRoute;
 
       if (this.formModel.id) {
-        actionurl = this.homeRoute + "/update/" + this.formModel.id + "";
+        actionurl = this.homeRoute + "/update/" + this.formModel.id;
       }
 
       return actionurl;
-    },
-    submitMethod: function submitMethod() {
-      var method = "POST";
-
-      if (this.formModel.id) {
-        method = "PUT";
-      }
     },
     actionTitle: function actionTitle() {
       var title = this.TEXT.add.title;
@@ -470,7 +395,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return title;
     },
-    ParentOnly: function ParentOnly() {
+    parentsOnly: function parentsOnly() {
       return this.menus.filter(function (m) {
         return !m.parent_id;
       }).map(function (m) {
@@ -498,8 +423,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     handlerClickOnTreeMenuItem: function handlerClickOnTreeMenuItem(value, $event) {
       var _this = this;
 
-      console.log('click', value);
-
       var notEmpty = _.values(value).some(function (x) {
         return x !== undefined;
       });
@@ -515,15 +438,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     inputDrag: function inputDrag(value) {
-      console.log('inputDrag', value);
-
       var result = _.cloneDeepWith(value, function (v) {
         if (!_.isObject(v)) {
           return false;
         }
       });
-
-      console.log('result', result);
     },
     onIconSelect: function onIconSelect(icon) {
       this.formModel.icon = icon;
@@ -552,11 +471,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       };
       this.currentActiveMenuItem = 0;
     },
-    confirmationTest: function confirmationTest() {
-      this.$confirm('Do you really want to exit?').then(function (res) {
-        console.log(res);
-      });
-    },
     handleDeleteMenu: function () {
       var _handleDeleteMenu = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         var res;
@@ -564,20 +478,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                console.log(this.$vuetify);
-                _context.next = 3;
-                return this.$confirm('Do you really want to exit?', {
-                  title: 'Warning'
+                _context.next = 2;
+                return this.$confirm("<div class=\"text-center\">\n                    ".concat(this.TEXT.deleteItemMenu.msg, "<br>\n                    <strong>").concat(this.currentActiveMenuItem.title, "</strong> \n                    will be remove FOREVER!!!\n                </div>"), {
+                  title: this.TEXT.deleteItemMenu.title
                 });
 
-              case 3:
+              case 2:
                 res = _context.sent;
 
                 if (res) {
-                  console.log('aaa');
+                  console.log(res);
+                  this.activeFormMethod = this.formMethods.destroy;
                 }
 
-              case 5:
+              case 4:
               case "end":
                 return _context.stop();
             }
@@ -594,140 +508,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   mounted: function mounted() {
     this.menus = this.initialProps;
-    console.log(this.initialProps);
+  },
+  watch: {
+    currentActiveMenuItem: function currentActiveMenuItem(val) {
+      this.activeFormMethod = Boolean(val) ? this.formMethods.update : this.formMethods.create;
+    }
   }
 });
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ConfirmationDialog.vue?vue&type=template&id=6fcf25f0&":
-/*!*********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ConfirmationDialog.vue?vue&type=template&id=6fcf25f0& ***!
-  \*********************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "v-dialog",
-    {
-      attrs: { persistent: "", "max-width": "290" },
-      scopedSlots: _vm._u([
-        {
-          key: "activator",
-          fn: function(ref) {
-            var on = ref.on
-            var attrs = ref.attrs
-            return [
-              _c(
-                "v-btn",
-                _vm._g(
-                  _vm._b(
-                    { attrs: { color: _vm.activatorColor, dark: "" } },
-                    "v-btn",
-                    attrs,
-                    false
-                  ),
-                  on
-                ),
-                [
-                  _vm.activatorIcon
-                    ? _c("v-icon", { attrs: { left: "" } }, [
-                        _vm._v(_vm._s(_vm.activatorIcon))
-                      ])
-                    : _vm._e(),
-                  _vm._v("\n        " + _vm._s(_vm.activatorText) + "\n    ")
-                ],
-                1
-              )
-            ]
-          }
-        }
-      ]),
-      model: {
-        value: _vm.dialog,
-        callback: function($$v) {
-          _vm.dialog = $$v
-        },
-        expression: "dialog"
-      }
-    },
-    [
-      _vm._v(" "),
-      _c(
-        "v-card",
-        [
-          _c("v-card-title", { staticClass: "headline" }),
-          _vm._v(" "),
-          _c("v-card-text", [
-            _c("h3", { staticClass: "text-center" }, [
-              _vm._v(_vm._s(_vm.msgText))
-            ])
-          ]),
-          _vm._v(" "),
-          _c("v-divider"),
-          _vm._v(" "),
-          _c(
-            "v-card-actions",
-            [
-              _c("v-spacer"),
-              _vm._v(" "),
-              _c(
-                "v-btn",
-                {
-                  attrs: { size: "sm", color: "warning" },
-                  on: {
-                    click: function($event) {
-                      _vm.dialog = false
-                    }
-                  }
-                },
-                [
-                  _c("v-icon", {
-                    domProps: { textContent: _vm._s("mdi-cancel") }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-btn",
-                {
-                  attrs: { size: "sm", color: "success" },
-                  on: {
-                    click: function($event) {
-                      _vm.dialog = false
-                    }
-                  }
-                },
-                [
-                  _c("v-icon", {
-                    domProps: { textContent: _vm._s("mdi-check") }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
 
 /***/ }),
 
@@ -1100,7 +887,6 @@ var render = function() {
                                 attrs: {
                                   action: _vm.actionRoute,
                                   "lazy-validation": "",
-                                  method: "post",
                                   enctype: "multipart/form-data"
                                 },
                                 model: {
@@ -1117,6 +903,11 @@ var render = function() {
                                   domProps: { value: _vm.csrf }
                                 }),
                                 _vm._v(" "),
+                                _c("input", {
+                                  attrs: { type: "hidden", name: "_method" },
+                                  domProps: { value: _vm.activeFormMethod }
+                                }),
+                                _vm._v(" "),
                                 _vm.formModel.id
                                   ? _c("input", {
                                       attrs: { type: "hidden", name: "id" },
@@ -1128,7 +919,7 @@ var render = function() {
                                   attrs: {
                                     name: "title",
                                     "error-messages": _vm.titleErrors,
-                                    counter: 10,
+                                    counter: 24,
                                     label: "Title",
                                     required: ""
                                   },
@@ -1153,7 +944,7 @@ var render = function() {
                                   attrs: {
                                     name: "path",
                                     "error-messages": _vm.pathErrors,
-                                    counter: 10,
+                                    counter: 24,
                                     label: "Path",
                                     required: ""
                                   },
@@ -1177,7 +968,7 @@ var render = function() {
                                 _c("v-select", {
                                   attrs: {
                                     name: "parent_id",
-                                    items: _vm.ParentOnly,
+                                    items: _vm.parentsOnly,
                                     "item-value": "id",
                                     clearable: "",
                                     label: "Parent"
@@ -1280,6 +1071,14 @@ var render = function() {
                                 _c(
                                   "v-btn",
                                   {
+                                    directives: [
+                                      {
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value: _vm.ResetableForm,
+                                        expression: "ResetableForm"
+                                      }
+                                    ],
                                     staticClass: "mr-4",
                                     attrs: { color: "warning" },
                                     on: { click: _vm.handleClear }
@@ -1298,6 +1097,18 @@ var render = function() {
                                 _c(
                                   "v-btn",
                                   {
+                                    directives: [
+                                      {
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value:
+                                          Boolean(_vm.currentActiveMenuItem) &&
+                                          _vm.currentActiveMenuItem
+                                            .is_removable,
+                                        expression:
+                                          "Boolean(currentActiveMenuItem) && currentActiveMenuItem.is_removable"
+                                      }
+                                    ],
                                     staticClass: "mr-4",
                                     attrs: { color: "error" },
                                     on: { click: _vm.handleDeleteMenu }
@@ -1477,75 +1288,6 @@ var render = function() {
 }
 var staticRenderFns = []
 render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/ConfirmationDialog.vue":
-/*!********************************************************!*\
-  !*** ./resources/js/components/ConfirmationDialog.vue ***!
-  \********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ConfirmationDialog_vue_vue_type_template_id_6fcf25f0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ConfirmationDialog.vue?vue&type=template&id=6fcf25f0& */ "./resources/js/components/ConfirmationDialog.vue?vue&type=template&id=6fcf25f0&");
-/* harmony import */ var _ConfirmationDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ConfirmationDialog.vue?vue&type=script&lang=js& */ "./resources/js/components/ConfirmationDialog.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _ConfirmationDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _ConfirmationDialog_vue_vue_type_template_id_6fcf25f0___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _ConfirmationDialog_vue_vue_type_template_id_6fcf25f0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/ConfirmationDialog.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/ConfirmationDialog.vue?vue&type=script&lang=js&":
-/*!*********************************************************************************!*\
-  !*** ./resources/js/components/ConfirmationDialog.vue?vue&type=script&lang=js& ***!
-  \*********************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmationDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ConfirmationDialog.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ConfirmationDialog.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmationDialog_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/ConfirmationDialog.vue?vue&type=template&id=6fcf25f0&":
-/*!***************************************************************************************!*\
-  !*** ./resources/js/components/ConfirmationDialog.vue?vue&type=template&id=6fcf25f0& ***!
-  \***************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmationDialog_vue_vue_type_template_id_6fcf25f0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ConfirmationDialog.vue?vue&type=template&id=6fcf25f0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ConfirmationDialog.vue?vue&type=template&id=6fcf25f0&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmationDialog_vue_vue_type_template_id_6fcf25f0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ConfirmationDialog_vue_vue_type_template_id_6fcf25f0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

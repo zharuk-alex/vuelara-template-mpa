@@ -11,7 +11,15 @@ class Menu extends Model
 
     protected $fillable = ['title','parent_id','path', 'icon', 'isblocked', 'order'];
 
-    public function children() {
+    protected $appends = ['is_removable']; // custom attribute
+    
+    public function getIsRemovableAttribute() 
+    {
+        return $this->id > 6; // temporary / accessing for make item removable
+    }
+
+    public function children() 
+    {
         return $this->hasMany('App\Models\Menu','parent_id','id') ;
     }
 }

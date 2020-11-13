@@ -29,6 +29,8 @@ class MenuController extends Controller
            'title' => 'required',
            "path" => 'required'
         ]);
+
+        dd('store');
         
         $input = $request->all();
         $input = $request->only('parent_id','title', 'path', 'icon', 'isblocked', 'order');
@@ -52,7 +54,11 @@ class MenuController extends Controller
             'title' => 'required',
             'path' => 'required'
         ]);
+
+        dd('update');
+        
         $menu = $request->all();
+        
         Menu::find($id)->update($menu);
         return redirect('menus')->with('message', 'Success', compact('menu'));
     }

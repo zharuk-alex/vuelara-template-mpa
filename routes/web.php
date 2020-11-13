@@ -21,6 +21,7 @@ Route::get('menus','App\Http\Controllers\MenuController@index');
 Route::post('menus', 'App\Http\Controllers\MenuController@store')->name('menus.store');
 Route::post('menus/update/{id}', 'App\Http\Controllers\MenuController@update');
 Route::post('menus/destroy/{id}', 'App\Http\Controllers\MenuController@destroy');
+// Route::resource('menus', 'App\Http\Controllers\MenuController');
 
 // pages
 Route::get('/', 'App\Http\Controllers\PagesController@dashboard');

@@ -37,19 +37,19 @@
                             <template>
                                 <v-form 
                                     ref="form" 
-                                     
                                     :action="actionRoute" 
                                     v-model="formIsValid"
                                     lazy-validation
-                                    method="post"
                                     enctype="multipart/form-data"
-                                >
+                                >   
+                                    <!-- hiddens -->
                                     <input type="hidden" name="_token" :value="csrf"  />
+                                    <input type="hidden" name="_method" :value="activeFormMethod"  />
                                     <input v-if="formModel.id" type="hidden" name="id" :value="formModel.id" />
-
+                                    <!--  -->
                                     <v-text-field v-model="formModel.title" name="title"
                                         :error-messages="titleErrors"
-                                        :counter="10"
+                                        :counter="24"
                                         label="Title"
                                         required
                                         @input="$v.formModel.title.$touch()"
@@ -61,14 +61,14 @@
                                         v-model="formModel.path" 
                                         name="path" 
                                         :error-messages="pathErrors"
-                                        :counter="10"
+                                        :counter="24"
                                         label="Path"
                                         required
                                         @input="$v.formModel.path.$touch()"
                                         @blur="$v.formModel.path.$touch()">
                                     </v-text-field>
 
-                                    <v-select v-model="formModel.parent_id" name="parent_id" :items="ParentOnly"
+                                    <v-select v-model="formModel.parent_id" name="parent_id" :items="parentsOnly"
                                         item-value="id" clearable label="Parent">
                                     </v-select>
 
@@ -93,21 +93,24 @@
                                         <v-icon left>mdi-check</v-icon>
                                         Save
                                     </v-btn>
-                                    <v-btn color="warning" class="mr-4" @click="handleClear">
+                                    <v-btn 
+                                        v-show="ResetableForm"
+                                        color="warning" 
+                                        class="mr-4" 
+                                        @click="handleClear"
+                                    >
                                         <v-icon left>mdi-undo</v-icon>
                                         Reset
                                     </v-btn>
-                                    <v-btn color="error" class="mr-4" @click="handleDeleteMenu">
+                                    <v-btn 
+                                        v-show="Boolean(currentActiveMenuItem) && currentActiveMenuItem.is_removable"
+                                        color="error" 
+                                        class="mr-4" 
+                                        @click="handleDeleteMenu"
+                                    >
                                         <v-icon left>mdi-trash-can-outline</v-icon>
                                         Delete
                                     </v-btn>
-
-                                    <!-- <confirmation-dialog 
-                                        activator-text="Удалить"
-                                        activator-color="error"
-                                        activator-icon="mdi-trash-can-outline"
-                                        msg-text="Вы уверены что хотите удалить?"
-                                    ></confirmation-dialog> -->
                                 </v-form>
                             </template>
                         </v-col>
@@ -120,7 +123,6 @@
                                 v-model="menus" 
                                 @input="inputDrag"
                             >
-                                <!-- eslint-disable-next-line vue/no-unused-vars -->
                                 <template v-slot:prepend="{ item }">
                                     <v-icon>{{item.icon}}</v-icon>
                                 </template>
@@ -141,7 +143,7 @@
                                 </template>
                                 <template v-slot:append="{ item }">
                                     <template
-                                    v-if="item.children != null && item.children.length > 0"
+                                        v-if="item.children != null && item.children.length > 0"
                                     >
                                     has {{ item.children.length }} children
                                     </template>
@@ -159,7 +161,6 @@
     import { validationMixin } from 'vuelidate'
     import { required, maxLength } from 'vuelidate/lib/validators'
     import DialogIconGrid from '../components/DialogIconsGrid';
-    import ConfirmationDialog from '../components/ConfirmationDialog'
     import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
     
     export default {
@@ -172,29 +173,37 @@
         validations: {
             formModel:{
                 title: { required, maxLength: maxLength(24) },
-                path: { required }
+                path: { required, maxLength: maxLength(24) }
             }
             
         },
         components: {
             DialogIconGrid, 
-            ConfirmationDialog,
             VuetifyDraggableTreeview
         },
         data() {
             return {
                 currentActiveMenuItem: null,
-                alert: true,
                 TEXT: {
                     edit: {
                         title: "Edit menu item",
                     },
                     add: {
                         title: "Add NEW menu item",
+                    },
+                    deleteItemMenu: {
+                        title: "Warning!!!",
+                        msg: `Do you realy want to DELETE item ?`
                     }
                 },
                 csrf: document.head.querySelector('meta[name="csrf-token"]').content,
                 menus: [],
+                activeFormMethod: null,
+                formMethods: {
+                    create: "post",
+                    update: "put/patch",
+                    destroy: "delete"
+                },
                 formIsValid: true,
                 formModel: {
                     id: null,
@@ -210,18 +219,15 @@
             }
         },
         computed: {
+            ResetableForm(){
+                return Boolean(this.currentActiveMenuItem) || !_.every(this.formModel, _.isEmpty);
+            },
             actionRoute(){
                 let actionurl = this.homeRoute
                 if(this.formModel.id){
-                    actionurl = this.homeRoute+"/update/"+this.formModel.id+""
+                    actionurl = this.homeRoute+"/update/"+this.formModel.id
                 }
                 return actionurl;
-            },
-            submitMethod(){
-                let method = "POST";
-                if(this.formModel.id) {
-                    method = "PUT";
-                }
             },
             actionTitle() {
                 let title = this.TEXT.add.title;
@@ -230,7 +236,7 @@
                 }
                 return title;
             },
-            ParentOnly() {
+            parentsOnly() {
                 return this.menus.filter(m => !m.parent_id).map(m => ({
                     id: m.id,
                     text: m.title
@@ -252,8 +258,6 @@
         },
         methods: {
             handlerClickOnTreeMenuItem(value, $event){
-                console.log('click', value);
-                
                 let notEmpty = _.values(value).some(x => x !== undefined);
                 if (notEmpty) {
                     this.currentActiveMenuItem = value;
@@ -266,13 +270,11 @@
                 } 
             },
             inputDrag(value){
-                console.log('inputDrag',value);
-                var result = _.cloneDeepWith(value, function(v) {
+                let result = _.cloneDeepWith(value, function(v) {
                     if(!_.isObject(v)) {
                         return false;
                     }
                 });
-                console.log('result',result);
             },
             onIconSelect(icon) {
                 this.formModel.icon = icon;
@@ -300,22 +302,31 @@
                 }
                 this.currentActiveMenuItem = 0;
             },
-            confirmationTest(){
-                this.$confirm('Do you really want to exit?').then(res => {
-                    console.log(res)
-                })
-            },
             handleDeleteMenu: async function () {
-                console.log(this.$vuetify);
-                let res = await this.$confirm('Do you really want to exit?', { title: 'Warning' });
+                let res = await this.$confirm(
+                    `<div class="text-center">
+                        ${this.TEXT.deleteItemMenu.msg}<br>
+                        <strong>${this.currentActiveMenuItem.title}</strong> 
+                        will be remove FOREVER!!!
+                    </div>`, 
+                    { 
+                        title: this.TEXT.deleteItemMenu.title 
+                    }
+                );
+                
                 if (res) {
-                    console.log('aaa');
+                    console.log(res);
+                    this.activeFormMethod = this.formMethods.destroy;
                 }
             }
         },
         mounted() {
             this.menus = this.initialProps;
-            console.log(this.initialProps)
+        },
+        watch: {
+            currentActiveMenuItem(val){
+                this.activeFormMethod = Boolean(val) ? this.formMethods.update : this.formMethods.create;
+            }
         }
     }
 

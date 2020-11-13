@@ -16,7 +16,7 @@ Vue.use(VuetifyConfirm, {
     buttonTrueFlat: false,
     buttonFalseFlat: true,
     color: 'warning',
-    icon: 'warning',
+    icon: 'mdi-trash-can',
     title: 'Warning',
     width: 350,
     property: '$confirm'
@@ -61,8 +61,6 @@ const app = new Vue({
             /* webpackChunkName: "js/axios-example" */ 
             './pages/AxiosExample.vue'
         ),
-        
-        
         WelcomePageContent: () => import(
             /* webpackChunkName: "js/welcome" */ 
             './pages/Welcome.vue'

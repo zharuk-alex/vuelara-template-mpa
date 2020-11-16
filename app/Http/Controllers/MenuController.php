@@ -74,14 +74,7 @@ class MenuController extends Controller
 
     // update order  menu items
     public function orderupdate(Request $request){
-        // dd($request->orders);
         $orders = json_decode(array_values($request->orders)[0], true);
-        // dd($orders);
-        // $orders->map(function($order) {
-        //     $menu = Menu::find($order['id']);
-        //     $menu->order = $order['order'];
-        //     $menu->save();
-        // });
         foreach ($orders as $key => $order) {
             
             $menu = Menu::find($order['id']);
@@ -90,18 +83,10 @@ class MenuController extends Controller
         }
         
         return redirect('menus');
-        // dd($orders);
-        // $images->map(function($image) {
-        //     //update your image
-        //     $image->save();
-        // });
-        // $data = YourModel::find($id);
-        // $data->someColumn = $request->someColumn;
-        // $data->save();
     }
 
     public function aside($request){
-        $menus = Menu::where('parent_id', '=', 0)->get();
+        $menus = Menu::where('parent_id', '=', 0)->orderBy('order')->get();
         foreach ($menus as $key => $menu) 
         {
             $menu->children;

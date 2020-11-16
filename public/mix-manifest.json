@@ -8,8 +8,7 @@
     "/js/menuTree.js": "/js/menuTree.js",
     "/js/reports.js": "/js/reports.js",
     "/js/welcome.js": "/js/welcome.js",
-    "/vendors~js/login.js": "/vendors~js/login.js",
-    "/vendors~js/reports.js": "/vendors~js/reports.js",
     "/vendors~js/login~js/menuTree.js": "/vendors~js/login~js/menuTree.js",
-    "/vendors~js/menuTree.js": "/vendors~js/menuTree.js"
+    "/vendors~js/menuTree.js": "/vendors~js/menuTree.js",
+    "/vendors~js/reports.js": "/vendors~js/reports.js"
 }

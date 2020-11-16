@@ -378,7 +378,7 @@
         },
         mounted() {
             this.menus = this.initialProps;
-            
+            console.log(this.menus);
             // flatten menus array of objects by children props
             let flatten = function(item) {
                 return [{id: item.id, order: item.order}, _.flatMapDeep(item.children, flatten)];

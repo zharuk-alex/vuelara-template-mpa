@@ -310,10 +310,53 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 
+var TEXT = {
+  edit: {
+    title: "Edit menu item"
+  },
+  add: {
+    title: "Add NEW menu item"
+  },
+  deleteItemMenu: {
+    title: "Warning!!!",
+    msg: "Do you realy want to DELETE item ?"
+  }
+};
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     homeRoute: String,
@@ -338,28 +381,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   data: function data() {
     return {
+      TEXT: TEXT,
+      isOrderChanged: false,
+      newOrders: [],
       currentActiveMenuItem: null,
-      TEXT: {
-        edit: {
-          title: "Edit menu item"
-        },
-        add: {
-          title: "Add NEW menu item"
-        },
-        deleteItemMenu: {
-          title: "Warning!!!",
-          msg: "Do you realy want to DELETE item ?"
-        }
-      },
       csrf: document.head.querySelector('meta[name="csrf-token"]').content,
       menus: [],
-      activeFormMethod: null,
-      formMethods: {
-        create: "post",
-        update: "put/patch",
-        destroy: "delete"
-      },
       formIsValid: true,
+      formCurrentAction: null,
       formModel: {
         id: null,
         title: "",
@@ -369,22 +398,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         isBlocked: false,
         order: null
       },
-      selectedMenu: [],
+      initialMenusOrders: [],
+      isRemoveItem: false,
+      // flag for route to destroy method
       showIconDialog: false
     };
   },
   computed: {
-    ResetableForm: function ResetableForm() {
-      return Boolean(this.currentActiveMenuItem) || !_.every(this.formModel, _.isEmpty);
-    },
-    actionRoute: function actionRoute() {
+    switchActionRoute: function switchActionRoute() {
       var actionurl = this.homeRoute;
 
-      if (this.formModel.id) {
+      if (this.formModel.id && !this.isRemoveItem) {
         actionurl = this.homeRoute + "/update/" + this.formModel.id;
+      } else if (this.formModel.id && this.isRemoveItem) {
+        actionurl = this.homeRoute + "/destroy/" + this.formModel.id;
       }
 
       return actionurl;
+    },
+    IsFormResetable: function IsFormResetable() {
+      return Boolean(this.currentActiveMenuItem) || !_.every(this.formModel, _.isEmpty);
     },
     actionTitle: function actionTitle() {
       var title = this.TEXT.add.title;
@@ -438,17 +471,27 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     inputDrag: function inputDrag(value) {
-      var result = _.cloneDeepWith(value, function (v) {
-        if (!_.isObject(v)) {
-          return false;
-        }
-      });
+      // flatten menus array of objects by children props
+      var flatten = function flatten(item, index) {
+        return [{
+          id: item.id,
+          order: index
+        }, _.flatMapDeep(item.children, flatten)];
+      };
+
+      var treeorder = _.flatMapDeep(value, flatten);
+
+      this.newOrders = _.intersectionWith(treeorder, this.initialMenusOrders, function (a, b) {
+        return a.id == b.id && a.order !== b.order;
+      }); // toggle alert visibility
+
+      this.isOrderChanged = this.newOrders.length ? true : false;
     },
     onIconSelect: function onIconSelect(icon) {
       this.formModel.icon = icon;
       this.showIconDialog = false;
     },
-    handleSubmit: function handleSubmit() {
+    handleSubmitForm: function handleSubmitForm() {
       // stop here if form is invalid
       this.$v.$touch();
 
@@ -473,6 +516,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     handleDeleteMenu: function () {
       var _handleDeleteMenu = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var _this2 = this;
+
         var res;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
@@ -481,17 +526,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.next = 2;
                 return this.$confirm("<div class=\"text-center\">\n                    ".concat(this.TEXT.deleteItemMenu.msg, "<br>\n                    <strong>").concat(this.currentActiveMenuItem.title, "</strong> \n                    will be remove FOREVER!!!\n                </div>"), {
                   title: this.TEXT.deleteItemMenu.title
+                }).then(function (res) {
+                  if (res) {
+                    _this2.isRemoveItem = res;
+                  }
+
+                  return res;
+                }).then(function (res) {
+                  if (res) {
+                    _this2.handleSubmitForm();
+                  }
                 });
 
               case 2:
                 res = _context.sent;
 
-                if (res) {
-                  console.log(res);
-                  this.activeFormMethod = this.formMethods.destroy;
-                }
-
-              case 4:
+              case 3:
               case "end":
                 return _context.stop();
             }
@@ -504,15 +554,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       return handleDeleteMenu;
-    }()
+    }(),
+    handleSubmitOrderForm: function handleSubmitOrderForm() {
+      this.isOrderChanged = false;
+      this.$refs.orderForm.submit();
+    },
+    handleResetOrder: function handleResetOrder() {
+      this.newOrders = [];
+      this.isOrderChanged = false;
+      this.menus = this.initialProps;
+    }
   },
   mounted: function mounted() {
-    this.menus = this.initialProps;
-  },
-  watch: {
-    currentActiveMenuItem: function currentActiveMenuItem(val) {
-      this.activeFormMethod = Boolean(val) ? this.formMethods.update : this.formMethods.create;
-    }
+    this.menus = this.initialProps; // flatten menus array of objects by children props
+
+    var flatten = function flatten(item) {
+      return [{
+        id: item.id,
+        order: item.order
+      }, _.flatMapDeep(item.children, flatten)];
+    };
+
+    this.initialMenusOrders = _.flatMapDeep(this.menus, flatten);
   }
 });
 
@@ -864,7 +927,7 @@ var render = function() {
                                     _vm._v(" "),
                                     _c("p", [
                                       _c("strong", [_vm._v("action url:")]),
-                                      _vm._v(_vm._s(_vm.actionRoute))
+                                      _vm._v(_vm._s(_vm.switchActionRoute))
                                     ]),
                                     _vm._v(" "),
                                     _c("p", [
@@ -885,9 +948,10 @@ var render = function() {
                               {
                                 ref: "form",
                                 attrs: {
-                                  action: _vm.actionRoute,
+                                  action: _vm.switchActionRoute,
                                   "lazy-validation": "",
-                                  enctype: "multipart/form-data"
+                                  enctype: "multipart/form-data",
+                                  method: "POST"
                                 },
                                 model: {
                                   value: _vm.formIsValid,
@@ -904,8 +968,11 @@ var render = function() {
                                 }),
                                 _vm._v(" "),
                                 _c("input", {
-                                  attrs: { type: "hidden", name: "_method" },
-                                  domProps: { value: _vm.activeFormMethod }
+                                  attrs: {
+                                    type: "hidden",
+                                    name: "_method",
+                                    value: "POST"
+                                  }
                                 }),
                                 _vm._v(" "),
                                 _vm.formModel.id
@@ -1055,7 +1122,7 @@ var render = function() {
                                       disabled: !_vm.formIsValid,
                                       color: "success"
                                     },
-                                    on: { click: _vm.handleSubmit }
+                                    on: { click: _vm.handleSubmitForm }
                                   },
                                   [
                                     _c("v-icon", { attrs: { left: "" } }, [
@@ -1075,8 +1142,8 @@ var render = function() {
                                       {
                                         name: "show",
                                         rawName: "v-show",
-                                        value: _vm.ResetableForm,
-                                        expression: "ResetableForm"
+                                        value: _vm.IsFormResetable,
+                                        expression: "IsFormResetable"
                                       }
                                     ],
                                     staticClass: "mr-4",
@@ -1266,7 +1333,118 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
-                          _c("v-divider", { staticClass: "my-3" })
+                          Boolean(_vm.newOrders)
+                            ? _c(
+                                "v-snackbar",
+                                {
+                                  attrs: { elevation: "24", timeout: -1 },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "action",
+                                        fn: function(ref) {
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "form",
+                                              {
+                                                ref: "orderForm",
+                                                attrs: {
+                                                  action:
+                                                    _vm.homeRoute +
+                                                    "/orderupdate",
+                                                  method: "POST"
+                                                }
+                                              },
+                                              [
+                                                _c("input", {
+                                                  attrs: {
+                                                    type: "hidden",
+                                                    name: "_token"
+                                                  },
+                                                  domProps: { value: _vm.csrf }
+                                                }),
+                                                _vm._v(" "),
+                                                _c("input", {
+                                                  attrs: {
+                                                    type: "hidden",
+                                                    name: "orders[]"
+                                                  },
+                                                  domProps: {
+                                                    value: JSON.stringify(
+                                                      _vm.newOrders
+                                                    )
+                                                  }
+                                                })
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-btn",
+                                              _vm._b(
+                                                {
+                                                  attrs: { color: "success" },
+                                                  on: {
+                                                    click:
+                                                      _vm.handleSubmitOrderForm
+                                                  }
+                                                },
+                                                "v-btn",
+                                                attrs,
+                                                false
+                                              ),
+                                              [
+                                                _vm._v(
+                                                  "\n                                save\n                                "
+                                                )
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-btn",
+                                              _vm._b(
+                                                {
+                                                  attrs: {
+                                                    color: "warning",
+                                                    text: ""
+                                                  },
+                                                  on: {
+                                                    click: _vm.handleResetOrder
+                                                  }
+                                                },
+                                                "v-btn",
+                                                attrs,
+                                                false
+                                              ),
+                                              [
+                                                _vm._v(
+                                                  "\n                                reset\n                                "
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    false,
+                                    486637046
+                                  ),
+                                  model: {
+                                    value: _vm.isOrderChanged,
+                                    callback: function($$v) {
+                                      _vm.isOrderChanged = $$v
+                                    },
+                                    expression: "isOrderChanged"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                            Order has been changed.\n\n                            "
+                                  )
+                                ]
+                              )
+                            : _vm._e()
                         ],
                         1
                       )
@@ -1366,14 +1544,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!*****************************************!*\
   !*** ./resources/js/pages/MenuTree.vue ***!
   \*****************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _MenuTree_vue_vue_type_template_id_9b7dacb4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MenuTree.vue?vue&type=template&id=9b7dacb4& */ "./resources/js/pages/MenuTree.vue?vue&type=template&id=9b7dacb4&");
 /* harmony import */ var _MenuTree_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MenuTree.vue?vue&type=script&lang=js& */ "./resources/js/pages/MenuTree.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _MenuTree_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _MenuTree_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -1403,7 +1582,7 @@ component.options.__file = "resources/js/pages/MenuTree.vue"
 /*!******************************************************************!*\
   !*** ./resources/js/pages/MenuTree.vue?vue&type=script&lang=js& ***!
   \******************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

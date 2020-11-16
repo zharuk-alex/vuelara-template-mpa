@@ -26,7 +26,7 @@
                                     </v-expansion-panel-header>
                                     <v-expansion-panel-content>
                                         <p><a href="https://v-draggable-treeview.netlify.app/" target="_blank">v-draggable-treeview</a></p>
-                                        <p><strong>action url:</strong>{{actionRoute}}</p>
+                                        <p><strong>action url:</strong>{{switchActionRoute}}</p>
                                         <p><strong>data to url:</strong>{{formModel}}</p>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
@@ -37,14 +37,15 @@
                             <template>
                                 <v-form 
                                     ref="form" 
-                                    :action="actionRoute" 
+                                    :action="switchActionRoute" 
                                     v-model="formIsValid"
                                     lazy-validation
                                     enctype="multipart/form-data"
+                                    method="POST"
                                 >   
                                     <!-- hiddens -->
                                     <input type="hidden" name="_token" :value="csrf"  />
-                                    <input type="hidden" name="_method" :value="activeFormMethod"  />
+                                    <input type="hidden" name="_method" value="POST"  />
                                     <input v-if="formModel.id" type="hidden" name="id" :value="formModel.id" />
                                     <!--  -->
                                     <v-text-field v-model="formModel.title" name="title"
@@ -89,12 +90,12 @@
                                     <v-checkbox v-model="formModel.isBlocked" name="isblocked" label="Is blocked">
                                     </v-checkbox>
                                     <!-- {{formModel}} -->
-                                    <v-btn :disabled="!formIsValid" color="success" class="mr-4" @click="handleSubmit">
+                                    <v-btn :disabled="!formIsValid" color="success" class="mr-4" @click="handleSubmitForm">
                                         <v-icon left>mdi-check</v-icon>
                                         Save
                                     </v-btn>
                                     <v-btn 
-                                        v-show="ResetableForm"
+                                        v-show="IsFormResetable"
                                         color="warning" 
                                         class="mr-4" 
                                         @click="handleClear"
@@ -149,12 +150,42 @@
                                     </template>
                                 </template>
                             </v-draggable-treeview>
-                            <v-divider class="my-3"></v-divider>
+                            <v-snackbar
+                                v-if="Boolean(newOrders)"
+                                v-model="isOrderChanged"
+                                elevation="24"
+                                :timeout="-1"
+                                >
+                                Order has been changed.
+
+                                <template v-slot:action="{ attrs }">
+                                    <form :action="homeRoute+'/orderupdate'" ref="orderForm" method="POST">
+                                        <input type="hidden" name="_token" :value="csrf"  />
+                                        <input type="hidden" name="orders[]" :value="JSON.stringify(newOrders)">
+                                    </form>
+                                    <v-btn
+                                        color="success"
+                                        v-bind="attrs"
+                                        @click="handleSubmitOrderForm"
+                                    >
+                                    save
+                                    </v-btn>
+                                    <v-btn
+                                        color="warning"
+                                        text
+                                        v-bind="attrs"
+                                        @click="handleResetOrder"
+                                    >
+                                    reset
+                                    </v-btn>
+                                </template>
+                            </v-snackbar>
                         </v-col>
                     </v-row>
                 </v-card-text>
             </v-card>
         </v-col>
+        
     </v-row>
 </template>
 <script>
@@ -162,6 +193,19 @@
     import { required, maxLength } from 'vuelidate/lib/validators'
     import DialogIconGrid from '../components/DialogIconsGrid';
     import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
+
+    const TEXT = {
+                    edit: {
+                        title: "Edit menu item",
+                    },
+                    add: {
+                        title: "Add NEW menu item",
+                    },
+                    deleteItemMenu: {
+                        title: "Warning!!!",
+                        msg: `Do you realy want to DELETE item ?`
+                    }
+                };
     
     export default {
         props: {
@@ -183,28 +227,14 @@
         },
         data() {
             return {
+                TEXT,
+                isOrderChanged: false,
+                newOrders: [],
                 currentActiveMenuItem: null,
-                TEXT: {
-                    edit: {
-                        title: "Edit menu item",
-                    },
-                    add: {
-                        title: "Add NEW menu item",
-                    },
-                    deleteItemMenu: {
-                        title: "Warning!!!",
-                        msg: `Do you realy want to DELETE item ?`
-                    }
-                },
                 csrf: document.head.querySelector('meta[name="csrf-token"]').content,
                 menus: [],
-                activeFormMethod: null,
-                formMethods: {
-                    create: "post",
-                    update: "put/patch",
-                    destroy: "delete"
-                },
                 formIsValid: true,
+                formCurrentAction: null,
                 formModel: {
                     id: null,
                     title: "",
@@ -214,20 +244,23 @@
                     isBlocked: false,
                     order: null
                 },
-                selectedMenu: [],
+                initialMenusOrders: [],
+                isRemoveItem: false, // flag for route to destroy method
                 showIconDialog: false
             }
         },
         computed: {
-            ResetableForm(){
-                return Boolean(this.currentActiveMenuItem) || !_.every(this.formModel, _.isEmpty);
-            },
-            actionRoute(){
-                let actionurl = this.homeRoute
-                if(this.formModel.id){
+            switchActionRoute(){
+                let actionurl = this.homeRoute;
+                if(this.formModel.id && !this.isRemoveItem){
                     actionurl = this.homeRoute+"/update/"+this.formModel.id
+                } else if(this.formModel.id && this.isRemoveItem){
+                    actionurl = this.homeRoute+"/destroy/"+this.formModel.id
                 }
                 return actionurl;
+            },
+            IsFormResetable(){
+                return Boolean(this.currentActiveMenuItem) || !_.every(this.formModel, _.isEmpty);
             },
             actionTitle() {
                 let title = this.TEXT.add.title;
@@ -257,6 +290,7 @@
             },
         },
         methods: {
+            
             handlerClickOnTreeMenuItem(value, $event){
                 let notEmpty = _.values(value).some(x => x !== undefined);
                 if (notEmpty) {
@@ -270,17 +304,26 @@
                 } 
             },
             inputDrag(value){
-                let result = _.cloneDeepWith(value, function(v) {
-                    if(!_.isObject(v)) {
-                        return false;
-                    }
-                });
+                
+                // flatten menus array of objects by children props
+                var flatten = function(item,index) {
+                    return [{id: item.id, order: index}, _.flatMapDeep(item.children, flatten)];
+                }
+                let treeorder = _.flatMapDeep(value, flatten);
+                
+                this.newOrders = _.intersectionWith(treeorder, this.initialMenusOrders, ((a,b)=>{
+                    return a.id==b.id && a.order!==b.order
+                }));
+
+                // toggle alert visibility
+                this.isOrderChanged = this.newOrders.length ? true : false;
+                
             },
             onIconSelect(icon) {
                 this.formModel.icon = icon;
                 this.showIconDialog = false;
             },
-            handleSubmit () {
+            handleSubmitForm () {
                 // stop here if form is invalid
                 this.$v.$touch();
                 if (this.$v.$invalid) {
@@ -312,21 +355,36 @@
                     { 
                         title: this.TEXT.deleteItemMenu.title 
                     }
-                );
-                
-                if (res) {
-                    console.log(res);
-                    this.activeFormMethod = this.formMethods.destroy;
-                }
+                ).then(res => {
+                    if (res) {
+                        this.isRemoveItem = res;
+                    }
+                    return res
+                }).then(res => {
+                    if (res) {
+                        this.handleSubmitForm();
+                    }
+                });
+            },
+            handleSubmitOrderForm(){
+                this.isOrderChanged = false
+                this.$refs.orderForm.submit();
+            },
+            handleResetOrder(){
+                this.newOrders = [];
+                this.isOrderChanged = false;
+                this.menus = this.initialProps;
             }
         },
         mounted() {
             this.menus = this.initialProps;
-        },
-        watch: {
-            currentActiveMenuItem(val){
-                this.activeFormMethod = Boolean(val) ? this.formMethods.update : this.formMethods.create;
+            
+            // flatten menus array of objects by children props
+            let flatten = function(item) {
+                return [{id: item.id, order: item.order}, _.flatMapDeep(item.children, flatten)];
             }
+            this.initialMenusOrders = _.flatMapDeep(this.menus, flatten);
+
         }
     }
 

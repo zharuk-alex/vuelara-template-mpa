@@ -11,7 +11,7 @@ class MenuController extends Controller
 {
 
     public function index(Request $request){
-        $menus = Menu::where('parent_id', '=', 0)->get();
+        $menus = Menu::where('parent_id', '=', 0)->orderBy('order')->get();
         foreach ($menus as $key => $menu) 
         {
             $menu->children;
@@ -28,9 +28,7 @@ class MenuController extends Controller
         $request->validate([
            'title' => 'required',
            "path" => 'required'
-        ]);
-
-        dd('store');
+        ]);        
         
         $input = $request->all();
         $input = $request->only('parent_id','title', 'path', 'icon', 'isblocked', 'order');
@@ -53,9 +51,7 @@ class MenuController extends Controller
             'id' => 'required',
             'title' => 'required',
             'path' => 'required'
-        ]);
-
-        dd('update');
+        ]);        
         
         $menu = $request->all();
         
@@ -63,10 +59,45 @@ class MenuController extends Controller
         return redirect('menus')->with('message', 'Success', compact('menu'));
     }
 
-
+    // destroy menu item by ID
     public function destroy(Request $request, $id)
     {
-        dd(['destroy'=>$id]);
+        $request->validate([
+            'id' => 'required',
+            'title' => 'required',
+            'path' => 'required'
+        ]);        
+        
+        Menu::find($id)->delete();
+        return redirect('menus');
+    }
+
+    // update order  menu items
+    public function orderupdate(Request $request){
+        // dd($request->orders);
+        $orders = json_decode(array_values($request->orders)[0], true);
+        // dd($orders);
+        // $orders->map(function($order) {
+        //     $menu = Menu::find($order['id']);
+        //     $menu->order = $order['order'];
+        //     $menu->save();
+        // });
+        foreach ($orders as $key => $order) {
+            
+            $menu = Menu::find($order['id']);
+            $menu->order = $order['order'];
+            $menu->save();
+        }
+        
+        return redirect('menus');
+        // dd($orders);
+        // $images->map(function($image) {
+        //     //update your image
+        //     $image->save();
+        // });
+        // $data = YourModel::find($id);
+        // $data->someColumn = $request->someColumn;
+        // $data->save();
     }
 
     public function aside($request){

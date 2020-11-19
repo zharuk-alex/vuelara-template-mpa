@@ -57,9 +57,9 @@ const app = new Vue({
             /* webpackChunkName: "js/dashboard" */ 
             './pages/Dashboard.vue'
         ),
-        AxiosExamplePageContent: () => import(
+        StudentsPageContent: () => import(
             /* webpackChunkName: "js/axios-example" */ 
-            './pages/AxiosExample.vue'
+            './pages/Students.vue'
         ),
         WelcomePageContent: () => import(
             /* webpackChunkName: "js/welcome" */ 

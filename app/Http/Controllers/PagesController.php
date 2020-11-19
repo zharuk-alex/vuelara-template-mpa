@@ -6,23 +6,14 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\MenuController;
 
 class PagesController extends Controller
 {
-    //
-    protected function AsideMenu($request)
-    {
-        $aside = new MenuController;
-        return $aside->aside($request);
-    }
 
     public function dashboard(Request $request)
     {
         
         $data = array(
-            "aside" =>  $this->AsideMenu($request),
-            "navbar" => $this->navbar(),
             "title" => "Dashboard"
         );
         return view('pages.dashboard', $data);
@@ -32,8 +23,6 @@ class PagesController extends Controller
     {
         
         $data = [
-            "aside" =>  $this->AsideMenu($request),
-            "navbar" => $this->navbar(),
             "title" => "Reports Page",
             "data" => [
                 
@@ -47,25 +36,18 @@ class PagesController extends Controller
 
     public function formAxiosPage(Request $request)
     {
-        
         $data = [
-            "aside" =>  $this->AsideMenu($request),
-            "navbar" => $this->navbar(),
+            "title" => "Students",
             "data" => [
-                "title" => "Form Axios",
                 "subtitle" => "Example send formData to Controller using Axios "
             ]
         ];
-
-        // dd($data);
-        return view('pages.axios-example', $data);
+        return view('pages.students', $data);
     }
 
     public function aboutPage(Request $request)
     {
         $data = array(
-            "aside" =>  $this->AsideMenu($request),
-            "navbar" => $this->navbar(),
             "title" => "about Page",
             "data" => [
                 "subtitle" => "Long page descriptions description Lorem Ipsum"
@@ -78,8 +60,6 @@ class PagesController extends Controller
     public function welcomePage(Request $request)
     {
         $data = array(
-            "aside" =>  $this->AsideMenu($request),
-            "navbar" => $this->navbar(),
             "title" => "Welcome"
         );
         
@@ -87,10 +67,4 @@ class PagesController extends Controller
     }
 
     // 
-
-    protected function navbar(){
-        return array(
-            "brandName" => "brandName"
-        );
-    }
 }

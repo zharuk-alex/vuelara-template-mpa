@@ -145,6 +145,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/DialogIconsGrid */ "./resources/js/components/DialogIconsGrid.vue");
 /* harmony import */ var vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuetify-draggable-treeview */ "./node_modules/vuetify-draggable-treeview/dist/v-draggable-treeview.esm.js");
+/* harmony import */ var _plugins_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../plugins/helpers */ "./resources/js/plugins/helpers.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -341,6 +342,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -367,11 +379,12 @@ var TEXT = {
     formModel: {
       title: {
         required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
-        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(24)
+        minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["minLength"])(3),
+        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(24) // mustBeUniq: (value) => Boolean(this.initialMenusOrders) ? _.some(this.initialMenusOrders, ['title', value]) : ""
+
       },
       path: {
-        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
-        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(24)
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"]
       }
     }
   },
@@ -429,8 +442,10 @@ var TEXT = {
       return title;
     },
     parentsOnly: function parentsOnly() {
+      var _this = this;
+
       return this.menus.filter(function (m) {
-        return !m.parent_id;
+        return !m.parent_id && _.get(_this.currentActiveMenuItem, "id") != m.id;
       }).map(function (m) {
         return {
           id: m.id,
@@ -441,8 +456,10 @@ var TEXT = {
     titleErrors: function titleErrors() {
       var errors = [];
       if (!this.$v.formModel.title.$dirty) return errors;
-      !this.$v.formModel.title.maxLength && errors.push('Title must be at most 10 characters long');
-      !this.$v.formModel.title.required && errors.push('Title is required.');
+      !this.$v.formModel.title.minLength && errors.push("Title must have at least ".concat(this.$v.formModel.title.$params.minLength.min, " letters"));
+      !this.$v.formModel.title.maxLength && errors.push("Title must be at most ".concat(this.$v.formModel.title.$params.maxLength.max, " characters long"));
+      !this.$v.formModel.title.required && errors.push('Title is required.'); //  !this.$v.formModel.title.mustBeUniq && errors.push('Same title is already used.')
+
       return errors;
     },
     pathErrors: function pathErrors() {
@@ -454,7 +471,7 @@ var TEXT = {
   },
   methods: {
     handlerClickOnTreeMenuItem: function handlerClickOnTreeMenuItem(value, $event) {
-      var _this = this;
+      var _this2 = this;
 
       var notEmpty = _.values(value).some(function (x) {
         return x !== undefined;
@@ -463,8 +480,8 @@ var TEXT = {
       if (notEmpty) {
         this.currentActiveMenuItem = value;
         Object.keys(this.currentActiveMenuItem).forEach(function (key) {
-          if (key in _this.formModel) {
-            _this.formModel[key] = _this.currentActiveMenuItem[key];
+          if (key in _this2.formModel) {
+            _this2.formModel[key] = _this2.currentActiveMenuItem[key];
           }
         });
         this.formIsValid = true;
@@ -516,7 +533,7 @@ var TEXT = {
     },
     handleDeleteMenu: function () {
       var _handleDeleteMenu = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var _this2 = this;
+        var _this3 = this;
 
         var res;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
@@ -528,13 +545,13 @@ var TEXT = {
                   title: this.TEXT.deleteItemMenu.title
                 }).then(function (res) {
                   if (res) {
-                    _this2.isRemoveItem = res;
+                    _this3.isRemoveItem = res;
                   }
 
                   return res;
                 }).then(function (res) {
                   if (res) {
-                    _this2.handleSubmitForm();
+                    _this3.handleSubmitForm();
                   }
                 });
 
@@ -566,14 +583,10 @@ var TEXT = {
     }
   },
   mounted: function mounted() {
-    this.menus = this.initialProps;
-    console.log(this.menus); // flatten menus array of objects by children props
+    this.menus = this.initialProps; // flatten menus array of objects by children props
 
     var flatten = function flatten(item) {
-      return [{
-        id: item.id,
-        order: item.order
-      }, _.flatMapDeep(item.children, flatten)];
+      return [item, _.flatMapDeep(item.children, flatten)];
     };
 
     this.initialMenusOrders = _.flatMapDeep(this.menus, flatten);
@@ -847,8 +860,8 @@ var render = function() {
             { attrs: { elevation: "4" } },
             [
               _c(
-                "v-app-bar",
-                { attrs: { flat: "", color: "purple" } },
+                "v-toolbar",
+                { attrs: { color: "indigo", dark: "" } },
                 [
                   _c(
                     "v-toolbar-title",
@@ -932,7 +945,9 @@ var render = function() {
                                     ]),
                                     _vm._v(" "),
                                     _c("p", [
-                                      _c("strong", [_vm._v("data to url:")]),
+                                      _c("strong", [
+                                        _vm._v("submited params:")
+                                      ]),
                                       _vm._v(_vm._s(_vm.formModel))
                                     ])
                                   ])
@@ -987,7 +1002,9 @@ var render = function() {
                                   attrs: {
                                     name: "title",
                                     "error-messages": _vm.titleErrors,
-                                    counter: 24,
+                                    counter:
+                                      _vm.$v.formModel.title.$params.maxLength
+                                        .max,
                                     label: "Title",
                                     required: ""
                                   },
@@ -1012,7 +1029,6 @@ var render = function() {
                                   attrs: {
                                     name: "path",
                                     "error-messages": _vm.pathErrors,
-                                    counter: 24,
                                     label: "Path",
                                     required: ""
                                   },
@@ -1039,7 +1055,15 @@ var render = function() {
                                     items: _vm.parentsOnly,
                                     "item-value": "id",
                                     clearable: "",
-                                    label: "Parent"
+                                    label: "Parent",
+                                    "item-disabled": ""
+                                  },
+                                  on: {
+                                    "click:clear": function($event) {
+                                      _vm.$nextTick(function() {
+                                        return (_vm.formModel.parent_id = 0)
+                                      })
+                                    }
                                   },
                                   model: {
                                     value: _vm.formModel.parent_id,
@@ -1605,6 +1629,28 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MenuTree_vue_vue_type_template_id_9b7dacb4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MenuTree_vue_vue_type_template_id_9b7dacb4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/plugins/helpers.js":
+/*!*****************************************!*\
+  !*** ./resources/js/plugins/helpers.js ***!
+  \*****************************************/
+/*! exports provided: findTextRecursively */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "findTextRecursively", function() { return findTextRecursively; });
+function findTextRecursively(needle, key, array) {
+  var result;
+  array.some(function (o) {
+    return o[key] === needle && (result = o) || (result = find(needle, o.children || []));
+  });
+  return result;
+}
 
 
 

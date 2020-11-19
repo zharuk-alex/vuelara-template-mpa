@@ -16,9 +16,9 @@ class CreateMenusTable extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('title');
-            $table->integer('parent_id');
+            $table->integer('parent_id')->default('0');
             $table->string('path')->nullable();
-            $table->string('icon');
+            $table->string('icon')->nullable();
             $table->tinyInteger('isblocked')->default('0');
             $table->integer('order')->default(0);
             $table->timestamps();
@@ -78,6 +78,16 @@ class CreateMenusTable extends Migration
             "title"=>"Students",
             "parent_id"=>5,
             "path"=>"students",
+            "icon"=>"",
+            "isblocked"=>0,
+            "order"=>0,
+            "created_at"=> Carbon::now(),
+            "updated_at"=> Carbon::now()
+        ]);
+        DB::table('menus')->insert([
+            "title"=>"Menus",
+            "parent_id"=>5,
+            "path"=>"menus",
             "icon"=>"",
             "isblocked"=>0,
             "order"=>0,

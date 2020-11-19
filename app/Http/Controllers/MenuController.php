@@ -9,6 +9,18 @@ use App\Models\Menu;
 
 class MenuController extends Controller
 {
+    public function aside($request){
+        $menus = Menu::where('parent_id', '=', 0)->orderBy('order')->get();
+        foreach ($menus as $key => $menu) 
+        {
+            $menu->children;
+            if($menu['path'] == $request->path())
+            {
+                $menu['active'] = true;
+            }
+        }
+        return $menus;
+    }
 
     public function index(Request $request){
         $menus = Menu::where('parent_id', '=', 0)->orderBy('order')->get();
@@ -17,7 +29,7 @@ class MenuController extends Controller
             $menu->children;
         }
         $data = array(
-            "aside" => $this->aside($request),
+            "title" => "Menus",
             'menus'=> $menus,
         );
         return view('pages.menuTreeview', $data);
@@ -83,18 +95,5 @@ class MenuController extends Controller
         }
         
         return redirect('menus');
-    }
-
-    public function aside($request){
-        $menus = Menu::where('parent_id', '=', 0)->orderBy('order')->get();
-        foreach ($menus as $key => $menu) 
-        {
-            $menu->children;
-            if($menu['path'] == $request->path())
-            {
-                $menu['active'] = true;
-            }
-        }
-        return $menus;
     }
 }

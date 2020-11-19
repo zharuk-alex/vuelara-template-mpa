@@ -12,10 +12,14 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Student::all();
-        return view('pages.axios-example', compact('data'));
+        $students = Student::all();
+        $data = array(
+            "title" => "students",
+            'students'=> $students,
+        );
+        return view('pages.students', compact('data'));
     }
 
     /**

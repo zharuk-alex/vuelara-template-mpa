@@ -10,8 +10,7 @@
     >
     <v-toolbar dark flat tile class="flex-wrap">
       <v-toolbar-title>AuditSoft</v-toolbar-title>
-      <v-divider></v-divider>
-      <v-subheader class="p-1">Field Data Collection & Management System</v-subheader>
+      <!-- <v-subheader class="p-1">Field Data Collection & Management System</v-subheader> -->
     </v-toolbar>
       <v-divider></v-divider>
        <perfect-scrollbar
@@ -147,9 +146,8 @@
       this.selectedItem = +this.initialProps.map((v,i) => v.active ? i : -1).filter(v => v > -1).join();
     },
     mounted(){
-      // console.log(this.initialProps)
+      console.log(this.initialProps)
       this.preventDocumentScroll();
-      
     },
     created() {
       this.$store.registerModule("asideDrawer", drawerStore);

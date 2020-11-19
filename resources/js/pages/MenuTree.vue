@@ -2,11 +2,14 @@
     <v-row>
         <v-col md="10" xl="8" class="mx-auto">
             <v-card elevation="4">
-                <v-app-bar flat color="purple">
+                <v-toolbar
+                    color="indigo"
+                    dark
+                    >
                     <v-toolbar-title class="title white--text pl-0">
                         Menus Admin
                     </v-toolbar-title>
-                </v-app-bar>
+                </v-toolbar>
                 <v-card-text>
                     <!-- {{initialProps}} -->
                     <v-row>
@@ -27,7 +30,7 @@
                                     <v-expansion-panel-content>
                                         <p><a href="https://v-draggable-treeview.netlify.app/" target="_blank">v-draggable-treeview</a></p>
                                         <p><strong>action url:</strong>{{switchActionRoute}}</p>
-                                        <p><strong>data to url:</strong>{{formModel}}</p>
+                                        <p><strong>submited params:</strong>{{formModel}}</p>
                                     </v-expansion-panel-content>
                                 </v-expansion-panel>
                             </v-expansion-panels>
@@ -50,7 +53,7 @@
                                     <!--  -->
                                     <v-text-field v-model="formModel.title" name="title"
                                         :error-messages="titleErrors"
-                                        :counter="24"
+                                        :counter="$v.formModel.title.$params.maxLength.max"
                                         label="Title"
                                         required
                                         @input="$v.formModel.title.$touch()"
@@ -62,15 +65,22 @@
                                         v-model="formModel.path" 
                                         name="path" 
                                         :error-messages="pathErrors"
-                                        :counter="24"
                                         label="Path"
                                         required
                                         @input="$v.formModel.path.$touch()"
                                         @blur="$v.formModel.path.$touch()">
                                     </v-text-field>
 
-                                    <v-select v-model="formModel.parent_id" name="parent_id" :items="parentsOnly"
-                                        item-value="id" clearable label="Parent">
+                                    <v-select 
+                                        v-model="formModel.parent_id" 
+                                        name="parent_id" 
+                                        :items="parentsOnly"
+                                        item-value="id" 
+                                        clearable  
+                                        @click:clear="$nextTick(() => formModel.parent_id=0)" 
+                                        label="Parent" 
+                                        item-disabled
+                                    >
                                     </v-select>
 
                                     <v-btn elevation="4" height="50" width="50" @click.stop="showIconDialog=true">
@@ -190,9 +200,10 @@
 </template>
 <script>
     import { validationMixin } from 'vuelidate'
-    import { required, maxLength } from 'vuelidate/lib/validators'
+    import { required, minLength, maxLength } from 'vuelidate/lib/validators'
     import DialogIconGrid from '../components/DialogIconsGrid';
     import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
+    import { findTextRecursively } from '../plugins/helpers'
 
     const TEXT = {
                     edit: {
@@ -216,8 +227,15 @@
 
         validations: {
             formModel:{
-                title: { required, maxLength: maxLength(24) },
-                path: { required, maxLength: maxLength(24) }
+                title: { 
+                    required, 
+                    minLength: minLength(3),
+                    maxLength: maxLength(24),
+                    // mustBeUniq: (value) => Boolean(this.initialMenusOrders) ? _.some(this.initialMenusOrders, ['title', value]) : ""
+                },
+                path: { 
+                    required
+                }
             }
             
         },
@@ -270,16 +288,17 @@
                 return title;
             },
             parentsOnly() {
-                return this.menus.filter(m => !m.parent_id).map(m => ({
-                    id: m.id,
-                    text: m.title
-                }));
+                return this.menus
+                        .filter(m => !m.parent_id && _.get(this.currentActiveMenuItem, "id")!=m.id )
+                        .map(m => ({ id: m.id, text: m.title }) );
             },
             titleErrors () {
                 const errors = []
                 if (!this.$v.formModel.title.$dirty) return errors
-                !this.$v.formModel.title.maxLength && errors.push('Title must be at most 10 characters long')
+                !this.$v.formModel.title.minLength && errors.push(`Title must have at least ${this.$v.formModel.title.$params.minLength.min} letters`)
+                !this.$v.formModel.title.maxLength && errors.push(`Title must be at most ${this.$v.formModel.title.$params.maxLength.max} characters long`)
                 !this.$v.formModel.title.required && errors.push('Title is required.')
+                //  !this.$v.formModel.title.mustBeUniq && errors.push('Same title is already used.')
                 return errors
             },
             pathErrors () {
@@ -378,13 +397,11 @@
         },
         mounted() {
             this.menus = this.initialProps;
-            console.log(this.menus);
             // flatten menus array of objects by children props
             let flatten = function(item) {
-                return [{id: item.id, order: item.order}, _.flatMapDeep(item.children, flatten)];
+                return [item, _.flatMapDeep(item.children, flatten)];
             }
             this.initialMenusOrders = _.flatMapDeep(this.menus, flatten);
-
         }
     }
 

@@ -3,9 +3,10 @@
 // //
 
 .aside-menu {
+	$white-color: white;
     background-color: #1e1e2d;
 	.menu-item.v-item--active {
-		color: white;
+		color: $white-color;
 		&.v-list-item--link::before{
 			background-color: #1b1b28;	
 		} 
@@ -21,9 +22,13 @@
 	.menu-bullet.menu-bullet-dot{
 		width: 5px;
 		height: 5px;
-		background: white;
+		background: $white-color;
 		border-radius: 50%;
 		margin-right: 8px;
+	}
+	.v-item--active.v-list-item--active{
+		background-color: #272727;
+		color: $white-color;
 	}
 	
 }

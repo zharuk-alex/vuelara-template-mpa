@@ -19,6 +19,9 @@ export default {
       return {
           message:'App.vue',
       }
+  },
+  beforeMount(){
+      console.log(this.$refs)
   }
 };
 </script>

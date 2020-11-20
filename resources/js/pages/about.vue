@@ -25,9 +25,19 @@
     export default {
         props: {
             initialProps: [Array, Object],
+            fullSizeContainer: {
+              type: Boolean,
+              default: false
+            }
         },
         mounted() {
-            console.log('Page About component mounted.')
+          console.log('Page About component mounted.')
+          console.log(this.fullSizeContainer)
         }
     }
 </script>
+<style>
+/* .v-main__wrap .container {
+  padding: 0!important;
+} */
+</style>

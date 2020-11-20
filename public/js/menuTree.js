@@ -146,6 +146,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/DialogIconsGrid */ "./resources/js/components/DialogIconsGrid.vue");
 /* harmony import */ var vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuetify-draggable-treeview */ "./node_modules/vuetify-draggable-treeview/dist/v-draggable-treeview.esm.js");
 /* harmony import */ var _plugins_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../plugins/helpers */ "./resources/js/plugins/helpers.js");
+/* harmony import */ var _mixins_lodashComputed__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/lodashComputed */ "./resources/js/mixins/lodashComputed.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -352,12 +353,28 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
 
 
 var TEXT = {
+  title: "title",
+  path: "path",
+  parent: "parent",
+  is_blocked: "is blocked",
   edit: {
     title: "Edit menu item"
   },
@@ -367,6 +384,21 @@ var TEXT = {
   deleteItemMenu: {
     title: "Warning!!!",
     msg: "Do you realy want to DELETE item ?"
+  },
+  descriptions: ["select item to edit / drag`n`drop for reordering"],
+  save: "save",
+  reset: "undo",
+  "delete": "delete",
+  order_changed_msg: "Order has been changed.",
+  validators: {
+    fieldIsRequared: "This field is required",
+    minLength: function minLength(count) {
+      return "Input must have at least ".concat(count, " letters");
+    },
+    maxLength: function maxLength(count) {
+      return "Input must be at most ".concat(count, " characters long");
+    },
+    isNotUniq: 'Same title is already used.'
   }
 };
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -374,14 +406,18 @@ var TEXT = {
     homeRoute: String,
     initialProps: [Array, Object]
   },
-  mixins: [vuelidate__WEBPACK_IMPORTED_MODULE_1__["validationMixin"]],
+  mixins: [vuelidate__WEBPACK_IMPORTED_MODULE_1__["validationMixin"], _mixins_lodashComputed__WEBPACK_IMPORTED_MODULE_6__["default"]],
   validations: {
     formModel: {
       title: {
         required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
         minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["minLength"])(3),
-        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(24) // mustBeUniq: (value) => Boolean(this.initialMenusOrders) ? _.some(this.initialMenusOrders, ['title', value]) : ""
-
+        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(24),
+        mustBeUniq: function mustBeUniq(value) {
+          return !_.some(this.initialMenusOrders, function (result) {
+            return _.get(result, "title") ? result.title.toLowerCase() == value.toLowerCase() : false;
+          });
+        }
       },
       path: {
         required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"]
@@ -411,7 +447,7 @@ var TEXT = {
         isBlocked: false,
         order: null
       },
-      initialMenusOrders: [],
+      initialMenusOrders: [{}],
       isRemoveItem: false,
       // flag for route to destroy method
       showIconDialog: false
@@ -456,16 +492,16 @@ var TEXT = {
     titleErrors: function titleErrors() {
       var errors = [];
       if (!this.$v.formModel.title.$dirty) return errors;
-      !this.$v.formModel.title.minLength && errors.push("Title must have at least ".concat(this.$v.formModel.title.$params.minLength.min, " letters"));
-      !this.$v.formModel.title.maxLength && errors.push("Title must be at most ".concat(this.$v.formModel.title.$params.maxLength.max, " characters long"));
-      !this.$v.formModel.title.required && errors.push('Title is required.'); //  !this.$v.formModel.title.mustBeUniq && errors.push('Same title is already used.')
-
+      !this.$v.formModel.title.minLength && errors.push(TEXT.validators.minLength(this.$v.formModel.title.$params.minLength.min));
+      !this.$v.formModel.title.maxLength && errors.push(TEXT.validators.maxLength(this.$v.formModel.title.$params.maxLength.max));
+      !this.$v.formModel.title.required && errors.push(TEXT.validators.fieldIsRequared);
+      !this.$v.formModel.title.mustBeUniq && this.formModel.id !== this.currentActiveMenuItem.id && errors.push(TEXT.validators.isNotUniq);
       return errors;
     },
     pathErrors: function pathErrors() {
       var errors = [];
       if (!this.$v.formModel.path.$dirty) return errors;
-      !this.$v.formModel.path.required && errors.push('Path is required');
+      !this.$v.formModel.path.required && errors.push(TEXT.validators.fieldIsRequared);
       return errors;
     }
   },
@@ -930,6 +966,19 @@ var render = function() {
                                         "a",
                                         {
                                           attrs: {
+                                            href: "https://vuelidate.js.org/",
+                                            target: "_blank"
+                                          }
+                                        },
+                                        [_vm._v("vuelidate")]
+                                      )
+                                    ]),
+                                    _vm._v(" "),
+                                    _c("p", [
+                                      _c(
+                                        "a",
+                                        {
+                                          attrs: {
                                             href:
                                               "https://v-draggable-treeview.netlify.app/",
                                             target: "_blank"
@@ -1005,7 +1054,7 @@ var render = function() {
                                     counter:
                                       _vm.$v.formModel.title.$params.maxLength
                                         .max,
-                                    label: "Title",
+                                    label: _vm._.capitalize(_vm.TEXT.title),
                                     required: ""
                                   },
                                   on: {
@@ -1029,7 +1078,7 @@ var render = function() {
                                   attrs: {
                                     name: "path",
                                     "error-messages": _vm.pathErrors,
-                                    label: "Path",
+                                    label: _vm._.capitalize(_vm.TEXT.path),
                                     required: ""
                                   },
                                   on: {
@@ -1055,7 +1104,7 @@ var render = function() {
                                     items: _vm.parentsOnly,
                                     "item-value": "id",
                                     clearable: "",
-                                    label: "Parent",
+                                    label: _vm._.capitalize(_vm.TEXT.parent),
                                     "item-disabled": ""
                                   },
                                   on: {
@@ -1078,6 +1127,7 @@ var render = function() {
                                   "v-btn",
                                   {
                                     attrs: {
+                                      disabled: !!_vm.isOrderChanged,
                                       elevation: "4",
                                       height: "50",
                                       width: "50"
@@ -1128,7 +1178,7 @@ var render = function() {
                                 _c("v-checkbox", {
                                   attrs: {
                                     name: "isblocked",
-                                    label: "Is blocked"
+                                    label: _vm._.capitalize(_vm.TEXT.is_blocked)
                                   },
                                   model: {
                                     value: _vm.formModel.isBlocked,
@@ -1144,7 +1194,9 @@ var render = function() {
                                   {
                                     staticClass: "mr-4",
                                     attrs: {
-                                      disabled: !_vm.formIsValid,
+                                      disabled:
+                                        !_vm.formIsValid ||
+                                        !!_vm.isOrderChanged,
                                       color: "success"
                                     },
                                     on: { click: _vm.handleSubmitForm }
@@ -1154,7 +1206,9 @@ var render = function() {
                                       _vm._v("mdi-check")
                                     ]),
                                     _vm._v(
-                                      "\n                                    Save\n                                "
+                                      "\n                                    " +
+                                        _vm._s(_vm.TEXT.save) +
+                                        "\n                                "
                                     )
                                   ],
                                   1
@@ -1172,7 +1226,10 @@ var render = function() {
                                       }
                                     ],
                                     staticClass: "mr-4",
-                                    attrs: { color: "warning" },
+                                    attrs: {
+                                      disabled: !!_vm.isOrderChanged,
+                                      color: "warning"
+                                    },
                                     on: { click: _vm.handleClear }
                                   },
                                   [
@@ -1180,7 +1237,9 @@ var render = function() {
                                       _vm._v("mdi-undo")
                                     ]),
                                     _vm._v(
-                                      "\n                                    Reset\n                                "
+                                      "\n                                    " +
+                                        _vm._s(_vm.TEXT.reset) +
+                                        "\n                                "
                                     )
                                   ],
                                   1
@@ -1202,7 +1261,10 @@ var render = function() {
                                       }
                                     ],
                                     staticClass: "mr-4",
-                                    attrs: { color: "error" },
+                                    attrs: {
+                                      disabled: !!_vm.isOrderChanged,
+                                      color: "error"
+                                    },
                                     on: { click: _vm.handleDeleteMenu }
                                   },
                                   [
@@ -1210,7 +1272,9 @@ var render = function() {
                                       _vm._v("mdi-trash-can-outline")
                                     ]),
                                     _vm._v(
-                                      "\n                                    Delete\n                                "
+                                      "\n                                    " +
+                                        _vm._s(_vm.TEXT.delete) +
+                                        "\n                                "
                                     )
                                   ],
                                   1
@@ -1244,11 +1308,7 @@ var render = function() {
                             _c(
                               "small",
                               { staticClass: "blue--text text--lighten-1" },
-                              [
-                                _vm._v(
-                                  " select item to edit / drag`n`drop for reordering"
-                                )
-                              ]
+                              [_vm._v(_vm._s(_vm.TEXT.descriptions[0]))]
                             )
                           ]),
                           _vm._v(" "),
@@ -1409,6 +1469,11 @@ var render = function() {
                                               _vm._b(
                                                 {
                                                   attrs: { color: "success" },
+                                                  domProps: {
+                                                    textContent: _vm._s(
+                                                      _vm.TEXT.save
+                                                    )
+                                                  },
                                                   on: {
                                                     click:
                                                       _vm.handleSubmitOrderForm
@@ -1417,12 +1482,7 @@ var render = function() {
                                                 "v-btn",
                                                 attrs,
                                                 false
-                                              ),
-                                              [
-                                                _vm._v(
-                                                  "\n                                save\n                                "
-                                                )
-                                              ]
+                                              )
                                             ),
                                             _vm._v(" "),
                                             _c(
@@ -1433,6 +1493,11 @@ var render = function() {
                                                     color: "warning",
                                                     text: ""
                                                   },
+                                                  domProps: {
+                                                    textContent: _vm._s(
+                                                      _vm.TEXT.reset
+                                                    )
+                                                  },
                                                   on: {
                                                     click: _vm.handleResetOrder
                                                   }
@@ -1440,12 +1505,7 @@ var render = function() {
                                                 "v-btn",
                                                 attrs,
                                                 false
-                                              ),
-                                              [
-                                                _vm._v(
-                                                  "\n                                reset\n                                "
-                                                )
-                                              ]
+                                              )
                                             )
                                           ]
                                         }
@@ -1453,7 +1513,7 @@ var render = function() {
                                     ],
                                     null,
                                     false,
-                                    486637046
+                                    2097985078
                                   ),
                                   model: {
                                     value: _vm.isOrderChanged,
@@ -1465,7 +1525,9 @@ var render = function() {
                                 },
                                 [
                                   _vm._v(
-                                    "\n                            Order has been changed.\n\n                            "
+                                    "\n                            " +
+                                      _vm._s(_vm.TEXT.order_changed_msg) +
+                                      "\n                            "
                                   )
                                 ]
                               )
@@ -1562,6 +1624,40 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_DialogIconsGrid_vue_vue_type_template_id_6b73897d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/mixins/lodashComputed.js":
+/*!***********************************************!*\
+  !*** ./resources/js/mixins/lodashComputed.js ***!
+  \***********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/** able to use lodash func inside vue template */
+/* harmony default export */ __webpack_exports__["default"] = ({
+  computed: {
+    /*  short form
+    
+    _:()=>_, 
+      */
+    _: function (_2) {
+      function _() {
+        return _2.apply(this, arguments);
+      }
+
+      _.toString = function () {
+        return _2.toString();
+      };
+
+      return _;
+    }(function () {
+      return _;
+    })
+  }
+});
 
 /***/ }),
 

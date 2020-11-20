@@ -26,7 +26,7 @@ Vue.use(PerfectScrollbar)
 Vue.use(Vuex)
 
 // vue app 
-import App from './App.vue'
+import App from './app.vue'
 
 const app = new Vue({
     vuetify,

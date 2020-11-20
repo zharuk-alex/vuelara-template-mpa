@@ -55041,3 +55041,8 @@ html.overflow-y-hidden {
   margin-right: 8px;
 }
 
+.aside-menu .v-item--active.v-list-item--active {
+  background-color: #272727;
+  color: white;
+}
+

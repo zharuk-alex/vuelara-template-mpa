@@ -5,12 +5,12 @@
     </head> 
     <body class="">
         <app id="app">
-            @if( !empty($aside))
+            @if( !empty($aside) )
             <template v-slot:aside>
                 <aside-drawer :initial-props="{{json_encode($aside)}}"></aside-drawer>
             </template>
             @endif
-            @if( !empty($navbar))
+            @if( !empty($navbar) )
             <template v-slot:navbar>
                 <navbar 
                     :initial-props="{{json_encode($navbar)}}"

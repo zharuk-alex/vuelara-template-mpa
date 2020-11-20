@@ -28,6 +28,7 @@
                                         </template>
                                     </v-expansion-panel-header>
                                     <v-expansion-panel-content>
+                                        <p><a href="https://vuelidate.js.org/" target="_blank">vuelidate</a></p>
                                         <p><a href="https://v-draggable-treeview.netlify.app/" target="_blank">v-draggable-treeview</a></p>
                                         <p><strong>action url:</strong>{{switchActionRoute}}</p>
                                         <p><strong>submited params:</strong>{{formModel}}</p>
@@ -54,7 +55,7 @@
                                     <v-text-field v-model="formModel.title" name="title"
                                         :error-messages="titleErrors"
                                         :counter="$v.formModel.title.$params.maxLength.max"
-                                        label="Title"
+                                        :label="_.capitalize(TEXT.title)"
                                         required
                                         @input="$v.formModel.title.$touch()"
                                         @blur="$v.formModel.title.$touch()"
@@ -65,7 +66,7 @@
                                         v-model="formModel.path" 
                                         name="path" 
                                         :error-messages="pathErrors"
-                                        label="Path"
+                                        :label="_.capitalize(TEXT.path)"
                                         required
                                         @input="$v.formModel.path.$touch()"
                                         @blur="$v.formModel.path.$touch()">
@@ -78,12 +79,18 @@
                                         item-value="id" 
                                         clearable  
                                         @click:clear="$nextTick(() => formModel.parent_id=0)" 
-                                        label="Parent" 
+                                        :label="_.capitalize(TEXT.parent)" 
                                         item-disabled
                                     >
                                     </v-select>
 
-                                    <v-btn elevation="4" height="50" width="50" @click.stop="showIconDialog=true">
+                                    <v-btn 
+                                        :disabled="!!isOrderChanged"
+                                        elevation="4" 
+                                        height="50" 
+                                        width="50" 
+                                        @click.stop="showIconDialog=true"
+                                    >
                                         <v-icon x-large v-text="formModel.icon" color="blue-grey darken-2">
                                         </v-icon>
                                     </v-btn>
@@ -97,30 +104,35 @@
                                         @saveIcon="onIconSelect"
                                     ></dialog-icon-grid>
 
-                                    <v-checkbox v-model="formModel.isBlocked" name="isblocked" label="Is blocked">
-                                    </v-checkbox>
-                                    <!-- {{formModel}} -->
-                                    <v-btn :disabled="!formIsValid" color="success" class="mr-4" @click="handleSubmitForm">
+                                    <v-checkbox 
+                                        v-model="formModel.isBlocked" 
+                                        name="isblocked" 
+                                        :label="_.capitalize(TEXT.is_blocked)"
+                                    />
+                                    
+                                    <v-btn :disabled="!formIsValid || !!isOrderChanged" color="success" class="mr-4" @click="handleSubmitForm">
                                         <v-icon left>mdi-check</v-icon>
-                                        Save
+                                        {{TEXT.save}}
                                     </v-btn>
                                     <v-btn 
                                         v-show="IsFormResetable"
+                                        :disabled="!!isOrderChanged"
                                         color="warning" 
                                         class="mr-4" 
                                         @click="handleClear"
                                     >
                                         <v-icon left>mdi-undo</v-icon>
-                                        Reset
+                                        {{TEXT.reset}}
                                     </v-btn>
                                     <v-btn 
                                         v-show="Boolean(currentActiveMenuItem) && currentActiveMenuItem.is_removable"
+                                        :disabled="!!isOrderChanged"
                                         color="error" 
                                         class="mr-4" 
                                         @click="handleDeleteMenu"
                                     >
                                         <v-icon left>mdi-trash-can-outline</v-icon>
-                                        Delete
+                                        {{TEXT.delete}}
                                     </v-btn>
                                 </v-form>
                             </template>
@@ -129,7 +141,7 @@
                             <v-sheet dark color="blue darken-2" class="rounded-sm py-2 text-center" elevation="2" >
                                 <h3>Menu List</h3>
                             </v-sheet>
-                            <p>*<small class="blue--text text--lighten-1"> select item to edit / drag`n`drop for reordering</small></p>
+                            <p>*<small class="blue--text text--lighten-1">{{ TEXT.descriptions[0] }}</small></p>
                             <v-draggable-treeview 
                                 v-model="menus" 
                                 @input="inputDrag"
@@ -138,7 +150,6 @@
                                     <v-icon>{{item.icon}}</v-icon>
                                 </template>
                                 <template v-slot:label="{ item }">
-                                    
                                     <v-hover  v-slot="{ hover }" >
                                         <div 
                                             class="h-100 d-flex align-center ml-3" 
@@ -166,8 +177,7 @@
                                 elevation="24"
                                 :timeout="-1"
                                 >
-                                Order has been changed.
-
+                                {{TEXT.order_changed_msg}}
                                 <template v-slot:action="{ attrs }">
                                     <form :action="homeRoute+'/orderupdate'" ref="orderForm" method="POST">
                                         <input type="hidden" name="_token" :value="csrf"  />
@@ -177,16 +187,17 @@
                                         color="success"
                                         v-bind="attrs"
                                         @click="handleSubmitOrderForm"
+                                        v-text="TEXT.save"
                                     >
-                                    save
                                     </v-btn>
+
                                     <v-btn
                                         color="warning"
                                         text
                                         v-bind="attrs"
                                         @click="handleResetOrder"
+                                        v-text="TEXT.reset"
                                     >
-                                    reset
                                     </v-btn>
                                 </template>
                             </v-snackbar>
@@ -204,26 +215,44 @@
     import DialogIconGrid from '../components/DialogIconsGrid';
     import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
     import { findTextRecursively } from '../plugins/helpers'
+    import lodashComputed from '../mixins/lodashComputed'
 
     const TEXT = {
-                    edit: {
-                        title: "Edit menu item",
-                    },
-                    add: {
-                        title: "Add NEW menu item",
-                    },
-                    deleteItemMenu: {
-                        title: "Warning!!!",
-                        msg: `Do you realy want to DELETE item ?`
-                    }
-                };
+        title: "title",
+        path: "path",
+        parent: "parent",
+        is_blocked: "is blocked",
+        edit: {
+            title: "Edit menu item",
+        },
+        add: {
+            title: "Add NEW menu item",
+        },
+        deleteItemMenu: {
+            title: "Warning!!!",
+            msg: `Do you realy want to DELETE item ?`
+        },
+        descriptions: [
+            "select item to edit / drag`n`drop for reordering"
+        ],
+        save: "save",
+        reset: "undo",
+        delete: "delete",
+        order_changed_msg: "Order has been changed.",
+        validators: {
+            fieldIsRequared: "This field is required",
+            minLength: (count)=>`Input must have at least ${count} letters`,
+            maxLength: (count)=>`Input must be at most ${count} characters long`,
+            isNotUniq: 'Same title is already used.'
+        }
+    };
     
     export default {
         props: {
             homeRoute: String,
             initialProps: [Array, Object],
         },
-        mixins: [validationMixin],
+        mixins: [validationMixin, lodashComputed],
 
         validations: {
             formModel:{
@@ -231,7 +260,11 @@
                     required, 
                     minLength: minLength(3),
                     maxLength: maxLength(24),
-                    // mustBeUniq: (value) => Boolean(this.initialMenusOrders) ? _.some(this.initialMenusOrders, ['title', value]) : ""
+                    mustBeUniq: function(value){
+                        return !_.some(this.initialMenusOrders, (result)=>{
+                            return _.get(result, "title") ? result.title.toLowerCase() == value.toLowerCase() : false ;
+                        });
+                    }
                 },
                 path: { 
                     required
@@ -262,7 +295,7 @@
                     isBlocked: false,
                     order: null
                 },
-                initialMenusOrders: [],
+                initialMenusOrders: [{}],
                 isRemoveItem: false, // flag for route to destroy method
                 showIconDialog: false
             }
@@ -295,21 +328,20 @@
             titleErrors () {
                 const errors = []
                 if (!this.$v.formModel.title.$dirty) return errors
-                !this.$v.formModel.title.minLength && errors.push(`Title must have at least ${this.$v.formModel.title.$params.minLength.min} letters`)
-                !this.$v.formModel.title.maxLength && errors.push(`Title must be at most ${this.$v.formModel.title.$params.maxLength.max} characters long`)
-                !this.$v.formModel.title.required && errors.push('Title is required.')
-                //  !this.$v.formModel.title.mustBeUniq && errors.push('Same title is already used.')
+                !this.$v.formModel.title.minLength && errors.push(TEXT.validators.minLength(this.$v.formModel.title.$params.minLength.min))
+                !this.$v.formModel.title.maxLength && errors.push(TEXT.validators.maxLength(this.$v.formModel.title.$params.maxLength.max))
+                !this.$v.formModel.title.required && errors.push(TEXT.validators.fieldIsRequared)
+                !this.$v.formModel.title.mustBeUniq && this.formModel.id!==this.currentActiveMenuItem.id &&  errors.push(TEXT.validators.isNotUniq)
                 return errors
             },
             pathErrors () {
                 const errors = []
                 if (!this.$v.formModel.path.$dirty) return errors
-                !this.$v.formModel.path.required && errors.push('Path is required')
+                !this.$v.formModel.path.required && errors.push(TEXT.validators.fieldIsRequared)
                 return errors
             },
         },
         methods: {
-            
             handlerClickOnTreeMenuItem(value, $event){
                 let notEmpty = _.values(value).some(x => x !== undefined);
                 if (notEmpty) {
@@ -323,7 +355,6 @@
                 } 
             },
             inputDrag(value){
-                
                 // flatten menus array of objects by children props
                 var flatten = function(item,index) {
                     return [{id: item.id, order: index}, _.flatMapDeep(item.children, flatten)];

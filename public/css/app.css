@@ -55046,3 +55046,7 @@ html.overflow-y-hidden {
   color: white;
 }
 
+html {
+  overflow-y: auto !important;
+}
+

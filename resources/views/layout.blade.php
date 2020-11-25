@@ -1,9 +1,14 @@
+{{--
+# Global page layout
+# Please, don't do any changes
+--}}
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('includes.head')
     </head> 
-    <body class="">
+    <body>
         <app id="app">
             @if( !empty($aside) )
             <template v-slot:aside>

@@ -54,7 +54,7 @@
 </template>
 <script>
     import lodash from 'lodash'
-    import mdiIcons from '../plugins/mdiIconsList'
+    import mdiIcons from '@/plugins/mdiIconsList'
 
     export default {
         props: {

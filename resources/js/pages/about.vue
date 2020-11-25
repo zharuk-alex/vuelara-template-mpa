@@ -24,15 +24,10 @@
 <script>
     export default {
         props: {
-            initialProps: [Array, Object],
-            fullSizeContainer: {
-              type: Boolean,
-              default: false
-            }
+          initialProps: [Array, Object]
         },
         mounted() {
           console.log('Page About component mounted.')
-          console.log(this.fullSizeContainer)
         }
     }
 </script>

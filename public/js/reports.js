@@ -9,8 +9,9 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var faker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! faker */ "./node_modules/faker/index.js");
-/* harmony import */ var faker__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(faker__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _mixins_vDataTableDef__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/mixins/vDataTableDef */ "./resources/js/mixins/vDataTableDef.js");
+/* harmony import */ var faker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! faker */ "./node_modules/faker/index.js");
+/* harmony import */ var faker__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(faker__WEBPACK_IMPORTED_MODULE_1__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 //
@@ -25,24 +26,29 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //
 //
 //
+//
+//
+
 
 var fakeRows = 1000;
 
 var Person = function Person() {
   _classCallCheck(this, Person);
 
-  this.firstName = faker__WEBPACK_IMPORTED_MODULE_0__["name"].firstName();
-  this.lastName = faker__WEBPACK_IMPORTED_MODULE_0__["name"].lastName();
-  this.phoneNumber = faker__WEBPACK_IMPORTED_MODULE_0__["phone"].phoneNumber();
-  this.email = faker__WEBPACK_IMPORTED_MODULE_0__["internet"].email();
-  this.latitude = faker__WEBPACK_IMPORTED_MODULE_0__["address"].latitude();
-  this.longitude = faker__WEBPACK_IMPORTED_MODULE_0__["address"].longitude();
-  this.county = faker__WEBPACK_IMPORTED_MODULE_0__["address"].county();
-  this.city = faker__WEBPACK_IMPORTED_MODULE_0__["address"].city();
-  this.companyName = faker__WEBPACK_IMPORTED_MODULE_0__["company"].companyName();
+  this.firstName = faker__WEBPACK_IMPORTED_MODULE_1__["name"].firstName();
+  this.lastName = faker__WEBPACK_IMPORTED_MODULE_1__["name"].lastName();
+  this.phoneNumber = faker__WEBPACK_IMPORTED_MODULE_1__["phone"].phoneNumber();
+  this.email = faker__WEBPACK_IMPORTED_MODULE_1__["internet"].email();
+  this.latitude = faker__WEBPACK_IMPORTED_MODULE_1__["address"].latitude();
+  this.longitude = faker__WEBPACK_IMPORTED_MODULE_1__["address"].longitude();
+  this.county = faker__WEBPACK_IMPORTED_MODULE_1__["address"].county();
+  this.city = faker__WEBPACK_IMPORTED_MODULE_1__["address"].city();
+  this.companyName = faker__WEBPACK_IMPORTED_MODULE_1__["company"].companyName();
+  this.personRowClass = "v-datatable-tr";
 };
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  mixins: [_mixins_vDataTableDef__WEBPACK_IMPORTED_MODULE_0__["default"]],
   props: {
     initialProps: [Array, Object]
   },
@@ -84,16 +90,7 @@ var Person = function Person() {
         value: 'longitude'
       }]
     };
-  },
-  computed: {
-    tableHeaders: function tableHeaders() {
-      return this.peopleArray.map(function (obj) {
-        return _.values(obj);
-      });
-    }
-  },
-  methods: {},
-  mounted: function mounted() {}
+  }
 });
 
 /***/ }),
@@ -114,20 +111,27 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c(
-    "v-row",
-    { attrs: { justify: "center" } },
+    "v-container",
+    { attrs: { fluid: "" } },
     [
       _c(
-        "v-col",
+        "v-row",
+        { attrs: { justify: "center" } },
         [
-          _c("v-data-table", {
-            staticClass: "elevation-1",
-            attrs: {
-              headers: _vm.headers,
-              items: _vm.peopleArray,
-              "items-per-page": 5
-            }
-          })
+          _c(
+            "v-col",
+            [
+              _c("v-data-table", {
+                attrs: {
+                  headers: _vm.headers,
+                  items: _vm.peopleArray,
+                  "items-per-page": 25,
+                  "item-class": "" + _vm.rowClass
+                }
+              })
+            ],
+            1
+          )
         ],
         1
       )
@@ -139,6 +143,25 @@ var staticRenderFns = []
 render._withStripped = true
 
 
+
+/***/ }),
+
+/***/ "./resources/js/mixins/vDataTableDef.js":
+/*!**********************************************!*\
+  !*** ./resources/js/mixins/vDataTableDef.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  methods: {
+    rowClass: function rowClass() {
+      return 'v-datatable-body-tr';
+    }
+  }
+});
 
 /***/ }),
 

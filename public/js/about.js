@@ -34,15 +34,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    initialProps: [Array, Object],
-    fullSizeContainer: {
-      type: Boolean,
-      "default": false
-    }
+    initialProps: [Array, Object]
   },
   mounted: function mounted() {
     console.log('Page About component mounted.');
-    console.log(this.fullSizeContainer);
   }
 });
 
@@ -60,7 +55,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .v-main__wrap .container {\r\n  padding: 0!important;\r\n} */\r\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\r\n/* .v-main__wrap .container {\r\n  padding: 0!important;\r\n} */\r\n", ""]);
 
 // exports
 

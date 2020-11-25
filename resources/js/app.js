@@ -2,8 +2,7 @@ require('./bootstrap');
 
 import vuetify from './plugins/vuetify' // path to vuetify export
 import Vuex from 'vuex';
-import PerfectScrollbar from 'vue2-perfect-scrollbar'
-import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
+
 import VuetifyConfirm from 'vuetify-confirm'
 
 
@@ -21,12 +20,11 @@ Vue.use(VuetifyConfirm, {
     width: 350,
     property: '$confirm'
   })
-Vue.use(VuetifyDraggableTreeview)
-Vue.use(PerfectScrollbar)
+
 Vue.use(Vuex)
 
 // vue app 
-import App from './app.vue'
+import App from './App.vue'
 
 const app = new Vue({
     vuetify,

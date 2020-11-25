@@ -8,7 +8,13 @@
       class="elevation-1 aside-menu"
       dark
     >
-    <v-toolbar dark flat tile class="flex-wrap">
+    <v-toolbar 
+      dark 
+      flat 
+      tile 
+      class="flex-wrap"
+      tag="div"
+    >
       <v-toolbar-title>AuditSoft</v-toolbar-title>
       <!-- <v-subheader class="p-1">Field Data Collection & Management System</v-subheader> -->
     </v-toolbar>
@@ -74,7 +80,7 @@
 </template>
 
 <script>
-  import drawerStore from "../store/AsideDrawer";
+  import drawerStore from "@/store/AsideDrawer";
   import { PerfectScrollbar } from 'vue2-perfect-scrollbar'
 
   export default {
@@ -146,7 +152,6 @@
       this.selectedItem = +this.initialProps.map((v,i) => v.active ? i : -1).filter(v => v > -1).join();
     },
     mounted(){
-      console.log(this.initialProps)
       this.preventDocumentScroll();
     },
     created() {
@@ -155,3 +160,4 @@
     }
   }
 </script>
+<style src="vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css"/>

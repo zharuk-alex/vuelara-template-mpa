@@ -3,9 +3,7 @@
         <slot name="navbar"></slot>
         <slot name="aside"></slot>
         <v-main>
-            <v-container fluid>
-                <slot name="content" class="text-center"></slot>
-            </v-container>
+            <slot name="content"></slot>
         </v-main>
         <v-footer app inset>
             <slot name="footer"></slot>
@@ -14,14 +12,10 @@
 </template>
 <script>
 export default {
-  computed: {},
   data() {
       return {
-          message:'App.vue',
+          brand:'Auditsoft',
       }
-  },
-  beforeMount(){
-      console.log(this.$refs)
   }
 };
 </script>

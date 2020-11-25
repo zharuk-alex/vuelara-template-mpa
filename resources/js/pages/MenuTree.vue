@@ -210,12 +210,14 @@
     </v-row>
 </template>
 <script>
+
+    import DialogIconGrid from '@/components/DialogIconsGrid'
+    import { findTextRecursively } from '@/plugins/helpers'
+    import lodashComputed from '@/mixins/lodashComputed'
+    import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
     import { validationMixin } from 'vuelidate'
     import { required, minLength, maxLength } from 'vuelidate/lib/validators'
-    import DialogIconGrid from '../components/DialogIconsGrid';
-    import VuetifyDraggableTreeview from 'vuetify-draggable-treeview'
-    import { findTextRecursively } from '../plugins/helpers'
-    import lodashComputed from '../mixins/lodashComputed'
+ 
 
     const TEXT = {
         title: "title",
@@ -260,7 +262,8 @@
                     required, 
                     minLength: minLength(3),
                     maxLength: maxLength(24),
-                    mustBeUniq: function(value){
+                    mustBeUniq: function(value) {
+                        // not used yet
                         return !_.some(this.initialMenusOrders, (result)=>{
                             return _.get(result, "title") ? result.title.toLowerCase() == value.toLowerCase() : false ;
                         });
@@ -301,8 +304,12 @@
             }
         },
         computed: {
+            isEditItem(){
+                return _.get(this.currentActiveMenuItem, "id") ? this.formModel.id!==this.currentActiveMenuItem.id : false
+            },
             switchActionRoute(){
                 let actionurl = this.homeRoute;
+                
                 if(this.formModel.id && !this.isRemoveItem){
                     actionurl = this.homeRoute+"/update/"+this.formModel.id
                 } else if(this.formModel.id && this.isRemoveItem){
@@ -331,7 +338,7 @@
                 !this.$v.formModel.title.minLength && errors.push(TEXT.validators.minLength(this.$v.formModel.title.$params.minLength.min))
                 !this.$v.formModel.title.maxLength && errors.push(TEXT.validators.maxLength(this.$v.formModel.title.$params.maxLength.max))
                 !this.$v.formModel.title.required && errors.push(TEXT.validators.fieldIsRequared)
-                !this.$v.formModel.title.mustBeUniq && this.formModel.id!==this.currentActiveMenuItem.id &&  errors.push(TEXT.validators.isNotUniq)
+                // !this.$v.formModel.title.mustBeUniq && !this.isEditItem && errors.push(TEXT.validators.isNotUniq)
                 return errors
             },
             pathErrors () {

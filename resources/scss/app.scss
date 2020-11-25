@@ -1,2 +1,6 @@
 @import "./vendors/plugins";
 @import "layout/aside";
+
+html{
+    overflow-y: auto!important;
+}

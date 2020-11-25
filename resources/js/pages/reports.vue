@@ -1,17 +1,21 @@
 <template>
-    <v-row justify="center">
-        <v-col>
-            <v-data-table
-                :headers="headers"
-                :items="peopleArray"
-                :items-per-page="5"
-                class="elevation-1"
-            ></v-data-table>
-        </v-col>
-    </v-row>
+    <v-container fluid>
+        <v-row justify="center">
+            <v-col>
+                <v-data-table
+                    :headers="headers"
+                    :items="peopleArray"
+                    :items-per-page="25"
+                    :item-class="`${rowClass}`"
+                ></v-data-table>
+            </v-col>
+        </v-row>
+    </v-container>
 </template>
 <script>
-    import { name, phone, internet, address, company } from 'faker';
+    import vDataTableDef from '@/mixins/vDataTableDef'
+    import { name, phone, internet, address, company } from 'faker'
+    
     const fakeRows = 1000;
     class Person {
         constructor() {
@@ -24,14 +28,18 @@
             this.county = address.county();
             this.city = address.city();
             this.companyName = company.companyName();
+            this.personRowClass = "v-datatable-tr"
         }
     }
 
     export default {
+        mixins: [
+            vDataTableDef
+        ],
         props: {
             initialProps: [Array, Object],
         },
-       data() {
+        data() {
             return {
                 peopleArray: Array.from({ length: fakeRows }).map((v, k) => new Person()),
                 headers: [
@@ -52,16 +60,5 @@
                 ]
             }
         },
-        computed:{
-            tableHeaders(){
-                return this.peopleArray.map(obj => _.values(obj));
-            }
-        },
-        methods:{
-            
-        },
-        mounted() {
-            
-        }
     }
 </script>

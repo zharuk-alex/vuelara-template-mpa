@@ -11,7 +11,7 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _plugins_mdiIconsList__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../plugins/mdiIconsList */ "./resources/js/plugins/mdiIconsList.js");
+/* harmony import */ var _plugins_mdiIconsList__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/plugins/mdiIconsList */ "./resources/js/plugins/mdiIconsList.js");
 //
 //
 //
@@ -139,14 +139,14 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuelidate */ "./node_modules/vuelidate/lib/index.js");
-/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vuelidate__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
-/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/DialogIconsGrid */ "./resources/js/components/DialogIconsGrid.vue");
+/* harmony import */ var _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @/components/DialogIconsGrid */ "./resources/js/components/DialogIconsGrid.vue");
+/* harmony import */ var _plugins_helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @/plugins/helpers */ "./resources/js/plugins/helpers.js");
+/* harmony import */ var _mixins_lodashComputed__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @/mixins/lodashComputed */ "./resources/js/mixins/lodashComputed.js");
 /* harmony import */ var vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! vuetify-draggable-treeview */ "./node_modules/vuetify-draggable-treeview/dist/v-draggable-treeview.esm.js");
-/* harmony import */ var _plugins_helpers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../plugins/helpers */ "./resources/js/plugins/helpers.js");
-/* harmony import */ var _mixins_lodashComputed__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../mixins/lodashComputed */ "./resources/js/mixins/lodashComputed.js");
+/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! vuelidate */ "./node_modules/vuelidate/lib/index.js");
+/* harmony import */ var vuelidate__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(vuelidate__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vuelidate/lib/validators */ "./node_modules/vuelidate/lib/validators/index.js");
+/* harmony import */ var vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_6__);
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -406,26 +406,27 @@ var TEXT = {
     homeRoute: String,
     initialProps: [Array, Object]
   },
-  mixins: [vuelidate__WEBPACK_IMPORTED_MODULE_1__["validationMixin"], _mixins_lodashComputed__WEBPACK_IMPORTED_MODULE_6__["default"]],
+  mixins: [vuelidate__WEBPACK_IMPORTED_MODULE_5__["validationMixin"], _mixins_lodashComputed__WEBPACK_IMPORTED_MODULE_3__["default"]],
   validations: {
     formModel: {
       title: {
-        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"],
-        minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["minLength"])(3),
-        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["maxLength"])(24),
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_6__["required"],
+        minLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_6__["minLength"])(3),
+        maxLength: Object(vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_6__["maxLength"])(24),
         mustBeUniq: function mustBeUniq(value) {
+          // not used yet
           return !_.some(this.initialMenusOrders, function (result) {
             return _.get(result, "title") ? result.title.toLowerCase() == value.toLowerCase() : false;
           });
         }
       },
       path: {
-        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_2__["required"]
+        required: vuelidate_lib_validators__WEBPACK_IMPORTED_MODULE_6__["required"]
       }
     }
   },
   components: {
-    DialogIconGrid: _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_3__["default"],
+    DialogIconGrid: _components_DialogIconsGrid__WEBPACK_IMPORTED_MODULE_1__["default"],
     VuetifyDraggableTreeview: vuetify_draggable_treeview__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   data: function data() {
@@ -454,6 +455,9 @@ var TEXT = {
     };
   },
   computed: {
+    isEditItem: function isEditItem() {
+      return _.get(this.currentActiveMenuItem, "id") ? this.formModel.id !== this.currentActiveMenuItem.id : false;
+    },
     switchActionRoute: function switchActionRoute() {
       var actionurl = this.homeRoute;
 
@@ -494,8 +498,8 @@ var TEXT = {
       if (!this.$v.formModel.title.$dirty) return errors;
       !this.$v.formModel.title.minLength && errors.push(TEXT.validators.minLength(this.$v.formModel.title.$params.minLength.min));
       !this.$v.formModel.title.maxLength && errors.push(TEXT.validators.maxLength(this.$v.formModel.title.$params.maxLength.max));
-      !this.$v.formModel.title.required && errors.push(TEXT.validators.fieldIsRequared);
-      !this.$v.formModel.title.mustBeUniq && this.formModel.id !== this.currentActiveMenuItem.id && errors.push(TEXT.validators.isNotUniq);
+      !this.$v.formModel.title.required && errors.push(TEXT.validators.fieldIsRequared); // !this.$v.formModel.title.mustBeUniq && !this.isEditItem && errors.push(TEXT.validators.isNotUniq)
+
       return errors;
     },
     pathErrors: function pathErrors() {

@@ -25,14 +25,13 @@
 </template>
 
 <script>
-import NavbarMenu from './NavbarMenu.vue'
+import NavbarMenu from '@/parts/NavbarMenu.vue'
 export default {
     props: ["initialProps", "pageTitle"],
     components: {
         NavbarMenu
     },
     data:()=>({
-        // drawer: null
         breadcrumbs: [
         {
           text: 'Dashboard',
